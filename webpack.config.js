@@ -1,17 +1,16 @@
+const webpack = require("webpack");
 const path = require("path");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = mode => {
-	return {
-		watch: mode.production ? false : true,
-		mode: mode.production ? "production" : "development",
-		devtool: mode.production ? "source-map" : "source-map",
+	const config = {
 		entry: {
-			index: path.resolve(__dirname, "src", "index.js")
+			index: path.resolve(__dirname, "src", "main.js")
 		},
 		output: {
 			path: path.resolve(__dirname, "dist"),
 			filename: "[name].js",
-			sourceMapFilename: "[name].js.map"
+			sourceMapFilename: "[name].[fullhash].[chunkhash].[contenthash].js.map"
 		},
 		module: {
 			rules: [
@@ -19,7 +18,7 @@ module.exports = mode => {
 					test: /(?<!\.(off|worker))\.js$/,
 					exclude: /node_modules/,
 					enforce: "pre",
-					use: ["babel-loader"]
+					use: ["babel-loader", "source-map-loader"]
 				},
 				{
 					test: /.+(?<!((?<!\.(off|worker))\.js))$/i,
@@ -37,5 +36,31 @@ module.exports = mode => {
 		resolve: {
 			mainFields: ['main', 'module'],
 		},
+		plugins: [new HtmlWebpackPlugin({
+			template: path.join("src", "index.html"),
+			inject: "body"
+		})],
 	}
+	const productionConfig = {
+		mode: "production",
+		devtool: "source-map",
+	}
+	const developmentConfig = {
+		mode: "development",
+		devtool: "source-map",
+		// watch: true,
+		devServer: {
+			static: {
+				directory: path.join(__dirname, 'dist'),
+			},
+			// compress: true,
+			port: 80,
+			client: {
+				logging: 'warn',
+			},
+		},
+	}
+
+	if (mode.production) return { ...config, ...productionConfig }
+	else return { ...config, ...developmentConfig }
 };

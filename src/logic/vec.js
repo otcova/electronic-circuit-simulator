@@ -235,11 +235,11 @@ class Matrix {
 			if (row.length) {
 				for (let i = 0; i < row.length; ++i) {
 					const n = num.prefix(row[i])
-					txt += " ".repeat(Math.max(1, 6 - n.toString().length)) + n
+					txt += " ".repeat(Math.max(1, 6 - n.length)) + n
 				}
 			} else {
 				const n = num.prefix(row)
-				txt += " ".repeat(Math.max(1, 6 - n.toString().length)) + n
+				txt += " ".repeat(Math.max(1, 6 - n.length)) + n
 			}
 			txt += " |\n"
 		}

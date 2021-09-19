@@ -3,7 +3,9 @@ import { render } from "react-dom"
 import { BitMapGraph } from "./BitMapGraph"
 import * as css from "./logic/style";
 
-import "./electronic circuit simulator/circuitSimulator"
+// import "./schematicDecoder/schematicDecoder"
+// import "./electronic circuit simulator/SchematicSimulator"
+import "./electronic circuit simulator/IcCircuit"
 
 const netsToWatch = [
 	"CLK",

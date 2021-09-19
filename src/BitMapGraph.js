@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as css from "./logic/style";
-import { vec2 } from "./logic/vec";
-import { MouseTracker } from "./logic/mouse";
-import { LineArray, PointArray, QuadArray, TriangleArray } from "./WebGL/simpleShapes";
+import { QuadArray } from "./WebGL/simpleShapes";
 import { WebGLCanvas } from "./WebGL/WebGL";
-import { Stopwatch } from "./logic/Stopwatch";
 
 const colors = {
 	font: [.9, .9, .9],
