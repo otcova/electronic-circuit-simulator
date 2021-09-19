@@ -19,22 +19,23 @@ export class Stopwatch {
 	}
 	log(txt) {
 		this.endDivision()
-		++this.logCount
-		if (this.logCount % 5 == 0 || this.logCount == 1) {
-			const restartTimer = this.startTime
-			if (restartTimer) this.stop()
+		// ++this.logCount
+		// if (this.logCount % 5 == 0 || this.logCount == 1) {
+		const restartTimer = this.startTime
+		if (restartTimer) this.stop()
 
-			const time = this.getMs()
-			if (txt) console.log(`Timer ${txt}: ${time.toFixed(2)}ms`)
-			else console.log(`Timer: ${time.toFixed(2)}ms`)
+		const time = this.getMs()
+		if (txt) console.log(`Timer ${txt}: ${time.toFixed(2)}ms`)
+		else console.log(`Timer: ${time.toFixed(2)}ms`)
 
-			for (const division of this.divisions) {
-				const divTime = division.end - division.start
-				console.log(`    | ${division.name}: ${divTime.toFixed(3)}ms  ${(100 * divTime / time).toFixed(1)}%`)
-			}
-
-			if (restartTimer) this.start()
+		for (const division of this.divisions) {
+			const divTime = division.end - division.start
+			console.log(`    | ${division.name}: ${divTime.toFixed(3)}ms  ${(100 * divTime / time).toFixed(1)}%`)
 		}
+
+		if (restartTimer) this.start()
+		// }
+		return this
 	}
 	reset() {
 		const time = this.getMs()

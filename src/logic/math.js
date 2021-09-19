@@ -1,3 +1,5 @@
+import { mat } from "./vec";
+
 class Num {
 	smoothStep(edge0, edge1, x) {
 		const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1)
@@ -55,7 +57,6 @@ export class SystemEquations {
 		this.mat[equationIndex][this.mat.length] = constant
 	}
 	solve() {
-		window.m = this.mat
 		return mat.solve(this.mat)
 	}
 }

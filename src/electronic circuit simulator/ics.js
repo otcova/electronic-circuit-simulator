@@ -34,17 +34,17 @@ export const icRanges = {
 
 export const icLib = new Map()
 
-// icLib.set("not", {
-// 	type: "inverter",
-// 	pins: {
-// 		inputs: new Map([["GND", 0],["VCC", 1],["I", 2]]),
-// 		outputs: new Map([["O", 3]]),
-// 	},
-// 	setup: () => ({}),
-// 	step: pins => {
-// 		pins.write("O", !pins.read("I"))
-// 	}
-// })
+icLib.set("not", {
+	type: "inverter",
+	pins: {
+		inputs: new Map([["GND", 0],["VCC", 1],["I", 2]]),
+		outputs: new Map([["O", 3]]),
+	},
+	setup: () => ({}),
+	step: pins => {
+		pins.write("O", !pins.read("I"))
+	}
+})
 
 icLib.set("SN74LVC574APWR", {
 	type: "register 8bit",

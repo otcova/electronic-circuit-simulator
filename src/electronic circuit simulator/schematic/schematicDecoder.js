@@ -86,7 +86,8 @@ export function decodeSchematicSrc(schematicSrc) {
 		ic.pins = pins
 	}
 	
-	const schematic = { nets: Array.from(nets.keys()) }
+	
+	const schematic = { nets: Array.from(nets.keys()), ics:[] }
 	schematic.ics = Array.from(ics.values()).map(ic => new Ic(ic.type, ic.name, ic.pins, schematic.nets)).filter(e=>e.type)
 	
 	return schematic

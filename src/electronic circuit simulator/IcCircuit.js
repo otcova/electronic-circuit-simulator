@@ -1,5 +1,5 @@
 import { mat } from "../logic/vec"
-import { ElectronicEquation } from "./electronicEquation"
+import { BigElectronicEquation, ElectronicEquation } from "./electronicEquation"
 import { icLib, icRanges } from "./ics"
 import { decodeSchematicSrc } from "./schematic/schematicDecoder"
 
@@ -18,8 +18,9 @@ class IcPinIn {
 		const node = ic.pinsNode[pinIndex]
 		this.disablePin = node == ic.gndNode || node == undefined || ic.gndNode == undefined || ic.vccNode == undefined
 		if (ic.gndNode == undefined || ic.vccNode == undefined) console.warn("IC '" + ic.name + "' is unplugged", ic)
-		if (!this.disablePin)
+		if (!this.disablePin) {
 			this.resistor = ic.icc.eEq.newResistor(node, ic.gndNode, { I: IcPinIn.I }, ic.name + ":" + pinIndex)
+		}
 	}
 	read() {
 		if (this.disablePin) return 0
@@ -29,7 +30,7 @@ class IcPinIn {
 
 class IcPinOut {
 
-	static RBlock = 1e19
+	static RBlock = 1e9
 	static RGndL = 1
 	static RGndH = 1e9
 	static RVccL = 1e9
@@ -98,6 +99,7 @@ export class Ic {
 		this.typeName = typeName
 		this.name = name
 
+
 		this.type = icLib.get(typeName)
 		if (!this.type) return console.warn(`> Unknown IC type: '${this.typeName}'`)
 
@@ -120,21 +122,27 @@ export class Ic {
 	}
 }
 
-class IcSwitch {
+export class IcSwitch {
 	constructor(icc, nodeName, name = "") {
 		if (name) name = "Switch-" + name
 		else name = "Switch"
+		this.current = 0
 		this.resistorVcc = icc.eEq.newResistor(icc.vccNode, icc.nets.indexOf(nodeName), { R: 1e9 }, name + ":Resistor-Vcc")
 		this.resistorGnd = icc.eEq.newResistor(icc.gndNode, icc.nets.indexOf(nodeName), { R: 1 }, name + ":Resistor-Gnd")
 	}
-	high() {
-		this.resistorVcc.defineR(1)
-		this.resistorGnd.defineR(1e9)
-		return this
-	}
-	low() {
-		this.resistorVcc.defineR(1e9)
-		this.resistorGnd.defineR(1)
+	high() { return this.#setValue(1) }
+	low() { return this.#setValue(0) }
+	switch() { return this.#setValue(1 - this.current) }
+
+	#setValue(n) {
+		this.current = n
+		if (n) {
+			this.resistorVcc.defineR(1e9)
+			this.resistorGnd.defineR(1)
+		} else {
+			this.resistorVcc.defineR(1)
+			this.resistorGnd.defineR(1e9)
+		}
 		return this
 	}
 }
@@ -143,15 +151,17 @@ export class IcCircuit {
 	constructor(vccName = "VCC", gndName = "GND") {
 		this.vccNodeName = vccName
 		this.gndNodeName = gndName
-		this.eEq = new ElectronicEquation()
+		this.eEq = new BigElectronicEquation()
 	}
 	loadSchematic(schematic) {
 		this.nets = schematic.nets
+		this.eEq.nets = this.nets
 		this.ics = schematic.ics
 		this.vccNode = this.nets.indexOf(this.vccNodeName)
 		this.gndNode = this.nets.indexOf(this.gndNodeName)
 
-		icc.eEq.newSource(this.gndNode, this.vccNode, { V: 3.33 }, "Source")
+		this.eEq.setMainSource(this.gndNode, this.vccNode, { V: 3.33 })
+		// this.eEq.newSource(this.gndNode, this.vccNode, { V: 3.33 }, "Main Source")
 
 		for (const ic of this.ics) ic.init(this)
 	}
@@ -159,7 +169,6 @@ export class IcCircuit {
 		for (let i = 0; i < repeat; ++i) {
 
 			this.eEq.solve(this.gndNode)
-			// mat.log(this.eEq.mesh.sysEqs.mat)
 
 			for (const ic of this.ics)
 				ic.step()
@@ -168,29 +177,7 @@ export class IcCircuit {
 	log() {
 		this.eEq.logResults(this.nets)
 	}
+	readNode(netName) {
+		return this.eEq.readNode(this.nets.indexOf(netName))
+	}
 }
-
-import schematicSrc from "./schematic/schematic.net"
-import { Stopwatch } from "../logic/Stopwatch"
-
-const schematic = decodeSchematicSrc(schematicSrc)
-
-// const schematic = { nets: ["GND", "VCC", "A", "B"] }
-// schematic.ics = [
-// 	new Ic("not", "Inv", ["GND", "VCC", "A", "B"], schematic.nets)
-// ]
-
-const icc = new IcCircuit("+3V")
-window.icc = icc
-icc.loadSchematic(schematic)
-// const btnA = new IcSwitch(icc, "A").high()
-
-const timer = new Stopwatch(true)
-icc.step()
-timer.log()
-
-// icc.log()
-
-// btnA.low()
-// icc.step(2)
-// icc.log()

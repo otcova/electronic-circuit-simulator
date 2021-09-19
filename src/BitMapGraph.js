@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as css from "./logic/style";
+import { num } from "./logic/math";
 import { QuadArray } from "./WebGL/simpleShapes";
 import { WebGLCanvas } from "./WebGL/WebGL";
 
@@ -39,29 +40,37 @@ function Text(props) {
 
 function BitMapGraphCanvas(props) {
 	const [points] = useState([])
+	const pastDataLen = useRef(0)
 	
 	const updateGraph = canvas => {
+		
+		if (pastDataLen.current != props.data.length)
+			pastDataLen.current = props.data.length
+		else return
+		
 		const columnW = 10
 		const rowH = canvas.size[1] / props.header.length
 		const rows = canvas.size[0] / columnW + 1
 		const columns = props.header.length
 
-		let offset = 10 * canvas.frameCount / 60
-		offset = Math.min(props.data.length - rows, offset)
+		let offset = Infinity//10 * canvas.frameCount / 60
+		offset = num.clamp(offset, 0, props.data.length - rows)
 		const boxOffset = (-offset + Math.floor(offset))*columnW
-
+		
 		points[0].reset()
 		points[1].reset()
 		
 		for (let x = 0; x < rows; ++x) {
+			const dataX = x + Math.floor(offset)
+			if (dataX >= props.data.length) break
 			for (let y = 0; y < columns; ++y) {
 				if (props.header[y]) {
 					
 					const posTopLeft = [x*columnW + boxOffset, y * rowH + 1]
 					const posBottomRight = [posTopLeft[0]+columnW-1, posTopLeft[1]+rowH-2]
 					
-					if (props.data[x + Math.floor(offset)][y]) points[0].quad(posTopLeft, posBottomRight)
-					else points[1].quad(posTopLeft, posBottomRight)
+					if (props.data[dataX][y]) points[1].quad(posTopLeft, posBottomRight)
+					else points[0].quad(posTopLeft, posBottomRight)
 				}
 			}
 		}
@@ -72,9 +81,7 @@ function BitMapGraphCanvas(props) {
 
 		points.push(new QuadArray(canvas, colors.off))
 		points.push(new QuadArray(canvas, colors.on))
-		
-		setTimeout(() => updateGraph(canvas), 1);
 	}
 
-	return <WebGLCanvas onSetup={setup} onDraw={()=>{}} antialias={false} />
+	return <WebGLCanvas onSetup={setup} onDraw={updateGraph} antialias={false} />
 }

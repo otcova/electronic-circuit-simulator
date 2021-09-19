@@ -255,7 +255,7 @@ class Matrix {
 	}
 
 	solve(mat) {
-		if (mat == undefined) throw Error("mat.solve(undefined)")
+		if (mat == undefined) throw Error("> mat.solve(undefined)")
 		mat = this.copy(mat)
 		const n = mat.length
 		const mergeZero = (x, y) => {
