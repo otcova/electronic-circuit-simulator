@@ -17,7 +17,7 @@ class IcPinIn {
 	constructor(ic, pinIndex) {
 		const node = ic.pinsNode[pinIndex]
 		this.disablePin = node == ic.gndNode || node == undefined || ic.gndNode == undefined || ic.vccNode == undefined
-		if (ic.gndNode == undefined || ic.vccNode == undefined) console.warn("IC '" + ic.name + "' is unplugged")
+		if (ic.gndNode == undefined || ic.vccNode == undefined) console.warn("IC '" + ic.name + "' is unplugged", ic)
 		if (!this.disablePin)
 			this.resistor = ic.icc.eEq.newResistor(node, ic.gndNode, { I: IcPinIn.I }, ic.name + ":" + pinIndex)
 	}
@@ -171,20 +171,24 @@ export class IcCircuit {
 }
 
 import schematicSrc from "./schematic/schematic.net"
+import { Stopwatch } from "../logic/Stopwatch"
 
 const schematic = decodeSchematicSrc(schematicSrc)
 
-console.log(schematic)
 // const schematic = { nets: ["GND", "VCC", "A", "B"] }
 // schematic.ics = [
 // 	new Ic("not", "Inv", ["GND", "VCC", "A", "B"], schematic.nets)
 // ]
 
-const icc = new IcCircuit()
+const icc = new IcCircuit("+3V")
+window.icc = icc
 icc.loadSchematic(schematic)
 // const btnA = new IcSwitch(icc, "A").high()
 
+const timer = new Stopwatch(true)
 icc.step()
+timer.log()
+
 // icc.log()
 
 // btnA.low()

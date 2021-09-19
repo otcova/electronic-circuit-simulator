@@ -49,7 +49,7 @@ export const icLib = new Map()
 icLib.set("SN74LVC574APWR", {
 	type: "register 8bit",
 	pins: {
-		inputs: new Map([["#OE", 0],["D", vec.range(1,8)],["GND", 9],["CLK", 10],["Vcc", 19]]),
+		inputs: new Map([["#OE", 0],["D", vec.range(1,8)],["GND", 9],["CLK", 10],["VCC", 19]]),
 		outputs: new Map([["O", vec.range(18,11)]]),
 	},
 	setup: () => ({ n: 0, pastClk: 0 }),
@@ -63,7 +63,7 @@ icLib.set("SN74LVC574APWR", {
 icLib.set("MC74LCX573DTR2G", {
 	type: "latch 8bit",
 	pins: {
-		inputs: new Map([["#OE", 0],["D", vec.range(1,8)],["GND", 9],["LE", 10],["Vcc", 19]]),
+		inputs: new Map([["#OE", 0],["D", vec.range(1,8)],["GND", 9],["LE", 10],["VCC", 19]]),
 		outputs: new Map([["O", vec.range(18,11)]]),
 	},
 	setup: () => ({ n: 0 }),
@@ -76,7 +76,7 @@ icLib.set("MC74LCX573DTR2G", {
 icLib.set("74LVC1G14SE-7", {
 	type: "inverter",
 	pins: {
-		inputs: new Map([["GND", 0],["VCC", 2],["I", 1]]),
+		inputs: new Map([["GND", 2],["VCC", 4],["I", 1]]),
 		outputs: new Map([["O", 3]]),
 	},
 	step: pins => {

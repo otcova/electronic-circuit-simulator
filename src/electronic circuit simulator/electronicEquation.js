@@ -1,4 +1,5 @@
 import { num, SystemEquations } from "../logic/math"
+import { Stopwatch } from "../logic/Stopwatch"
 import { icRanges } from "./ics"
 
 class Source {

@@ -55,6 +55,7 @@ export class SystemEquations {
 		this.mat[equationIndex][this.mat.length] = constant
 	}
 	solve() {
+		window.m = this.mat
 		return mat.solve(this.mat)
 	}
 }

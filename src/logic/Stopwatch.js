@@ -75,3 +75,5 @@ export class Stopwatch {
 		if (restartTimer) this.start()
 	}
 }
+
+window.Stopwatch = Stopwatch

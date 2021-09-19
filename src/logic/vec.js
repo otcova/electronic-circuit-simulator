@@ -1,11 +1,12 @@
 import { num } from "./math"
+import { Stopwatch } from "./Stopwatch"
 
 class Vec {
 
 	// create
 
 	new(len, fill = 0) {
-		if (typeof fill == "function") return (new Array(len)).fill(0).map((e,i)=>fill(i))
+		if (typeof fill == "function") return (new Array(len)).fill(0).map((e, i) => fill(i))
 		return (new Array(len)).fill(fill)
 	}
 	random(dimensions, min = 0, max = 1) {
@@ -13,14 +14,14 @@ class Vec {
 		const getMin = i => Array.isArray(min) ? min[i] : min
 		return new Array(dimensions).fill(0).map((e, i) => getMin(i) + Math.random() * (getMax(i) - getMin(i)))
 	}
-	range(start, end, step=1) {
+	range(start, end, step = 1) {
 		if (end < start) step = -Math.abs(step)
 		else step = Math.abs(step)
-		return Array.from({length: Math.abs(Math.floor((end-start)/step)+1)}, (x,i) => {
+		return Array.from({ length: Math.abs(Math.floor((end - start) / step) + 1) }, (x, i) => {
 			return start + i * step
 		})
 	}
-	
+
 	// single vec
 
 	sqLen(v) {
@@ -47,11 +48,15 @@ class Vec {
 	// 2 vec
 
 	add(v, u) {
-		return v.map((e, i) => e + u[i])
+		const a = new Array(v.length)
+		for (let i = 0; i < v.length; ++i) a[i] = v[i] + u[i]
+		return a
 	}
 	sub(v, u) {
 		if (typeof u == "number") return v.map(e => e - u)
-		return v.map((e, i) => e - u[i])
+		const a = new Array(v.length)
+		for (let i = 0; i < v.length; ++i) a[i] = v[i] - u[i]
+		return a
 	}
 	mult(v, u) {
 		return v.map((e, i) => e * u[i])
@@ -72,8 +77,10 @@ class Vec {
 	// vec and const
 
 	scale(v, c) {
-		if (typeof c == "number") return v.map(e => e * c)
-		return this.mult(v, c)
+		const a = new Array(v.length)
+		for (let i = 0; i < v.length; ++i)
+			a[i] = v[i] * c
+		return a
 	}
 
 	// 2 dots
@@ -229,6 +236,7 @@ class Matrix {
 	}
 
 	log(mat) {
+		if (typeof mat == "number") return console.log("[" + mat + "]")
 		let txt = ""
 		for (const row of mat) {
 			txt += "|"
@@ -290,6 +298,85 @@ class Matrix {
 			}
 		}
 		return result
+	}
+
+	// mat
+	solveInv(weights, constants) {
+		return this.dot(this.inverse(weights), constants)
+	}
+	
+	inverse(mat) {
+		const determinant = this.determinant(mat)
+		if (determinant == 0)
+			throw Error("Determinant can't be  zero.")
+
+		const adjugate = this.adjugate(mat)
+		return this.scale(adjugate, 1 / determinant)
+	}
+	determinant(mat) {
+		if (mat.length == 2)
+			return mat[0][0]*mat[1][1] - mat[0][1]*mat[1][0]
+		let d = 0
+		for (let x = 0; x < mat[0].length; ++x) {
+			if (x%2 == 0) d += mat[0][x] * this.minor(mat, x, 0)
+			else d -= mat[0][x] * this.minor(mat, x, 0)
+		}
+		return d
+	}
+	adjugate(mat) {
+		return this.transpose(this.map(mat, (_,x,y) => this.cofactor(mat, x, y)))
+	}
+	scale(mat, scalar) {
+		return this.map(mat, e => e * scalar)
+	}
+	minor(mat, c, r) {
+		const newMat = this.new(mat[0].length - 1, mat.length - 1)
+		for (let y = 0; y < mat.length - 1; ++y) {
+			for (let x = 0; x < mat[y].length - 1; ++x) {
+				newMat[y][x] = mat[y < r ? y : y + 1][x < c ? x : x + 1]
+			}
+		}
+		return this.determinant(newMat)
+	}
+	cofactor(mat, c, r) {
+		const sign = Math.pow(-1, c + r)
+		const minor = this.minor(mat, c, r)
+		return sign * minor
+	}
+	transpose(mat) {
+		const newMat = this.new(mat.length, mat[0].length)
+		for (let y = 0; y < mat.length; ++y) {
+			for (let x = 0; x < mat[y].length; ++x) {
+				newMat[x][y] = mat[y][x]
+			}
+		}
+		return newMat
+	}
+	deleteColumn(mat, c) {
+		const newMat = this.new(mat[0].length-1, mat.length)
+		for (let y = 0; y < mat.length; ++y) {
+			for (let x = 0; x < mat[y].length-1; ++x) {
+				newMat[y][x] = mat[y][x < c ? x : x + 1]
+			}
+		}
+		return newMat
+	}
+	getColumn(mat, c) {
+		const newMat = this.new(1, mat.length)
+		for (let y = 0; y < mat.length; ++y) {
+			newMat[y][0] = mat[y][c]
+		}
+		return newMat
+	}
+	// Utils
+	map(mat, callback) {
+		const newMat = this.new(mat[0].length, mat.length)
+		for (let y = 0; y < mat.length; ++y) {
+			for (let x = 0; x < mat[y].length; ++x) {
+				newMat[y][x] = callback(mat[y][x], x, y)
+			}
+		}
+		return newMat
 	}
 }
 
