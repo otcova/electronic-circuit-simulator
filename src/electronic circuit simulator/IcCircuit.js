@@ -83,7 +83,7 @@ class IcPins {
 		if (!Array.isArray(pinsIndex)) throw Error("pin '" + pinName + "' is not valid on '" + this.ic.type.type + "'")
 		let value = 0
 		for (let i = 0; i < pinsIndex.length; ++i)
-			value += this.pins[pinsIndex[i]].read() & (1 << i)
+			value |= this.pins[pinsIndex[i]].read() << i
 		return value
 	}
 	node(pinName) {
@@ -127,8 +127,9 @@ export class IcSwitch {
 		if (name) name = "Switch-" + name
 		else name = "Switch"
 		this.current = 0
-		this.resistorVcc = icc.eEq.newResistor(icc.vccNode, icc.nets.indexOf(nodeName), { R: 1e9 }, name + ":Resistor-Vcc")
-		this.resistorGnd = icc.eEq.newResistor(icc.gndNode, icc.nets.indexOf(nodeName), { R: 1 }, name + ":Resistor-Gnd")
+		const node = icc.nets.indexOf(nodeName)
+		this.resistorVcc = icc.eEq.newResistor(icc.vccNode, node, { R: 1e9 }, name + ":Resistor-Vcc")
+		this.resistorGnd = icc.eEq.newResistor(node, icc.gndNode, { R: 1 }, name + ":Resistor-Gnd")
 	}
 	high() { return this.#setValue(1) }
 	low() { return this.#setValue(0) }
@@ -137,11 +138,11 @@ export class IcSwitch {
 	#setValue(n) {
 		this.current = n
 		if (n) {
-			this.resistorVcc.defineR(1e9)
-			this.resistorGnd.defineR(1)
-		} else {
 			this.resistorVcc.defineR(1)
 			this.resistorGnd.defineR(1e9)
+		} else {
+			this.resistorVcc.defineR(1e9)
+			this.resistorGnd.defineR(1)
 		}
 		return this
 	}
@@ -179,5 +180,21 @@ export class IcCircuit {
 	}
 	readNode(netName) {
 		return this.eEq.readNode(this.nets.indexOf(netName))
+	}
+	logNetComps(netName) {
+		let txt = netName + "\n"
+		const comps = this.eEq.components.get(this.nets.indexOf(netName))
+		const m = []
+		for (const comp of comps) {
+			// txt += "  | I:"
+			// txt += num.prefix(comp.readI())
+			// txt += "\n"
+			m.push([
+				comp.name,
+				"I = " + num.prefix(comp.readI())
+			])
+		}
+		mat.log(m, 30)
+		// console.log(txt)
 	}
 }

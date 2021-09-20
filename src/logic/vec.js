@@ -235,7 +235,7 @@ class Matrix {
 		return newMat
 	}
 
-	log(mat) {
+	log(mat, minColumnWidth=6) {
 		if (typeof mat == "number") return console.log("[" + mat + "]")
 		let txt = ""
 		for (const row of mat) {
@@ -243,11 +243,11 @@ class Matrix {
 			if (row.length) {
 				for (let i = 0; i < row.length; ++i) {
 					const n = num.prefix(row[i])
-					txt += " ".repeat(Math.max(1, 6 - n.length)) + n
+					txt += " ".repeat(Math.max(1, minColumnWidth - n.length)) + n
 				}
 			} else {
 				const n = num.prefix(row)
-				txt += " ".repeat(Math.max(1, 6 - n.length)) + n
+				txt += " ".repeat(Math.max(1, minColumnWidth - n.length)) + n
 			}
 			txt += " |\n"
 		}

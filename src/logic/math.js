@@ -16,6 +16,7 @@ class Num {
 	}
 	prefix(n, precision=4) {
 		if (n == undefined) return "udef"
+		if (typeof n == "string") return n
 		const unitList = ['y', 'z', 'a', 'f', 'p', 'n', 'u', 'm', '', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
 		const zeroIndex = 8
 		const me = n.toExponential(precision-1).split(/e/)

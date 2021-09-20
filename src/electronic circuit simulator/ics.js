@@ -24,9 +24,11 @@ export const icRanges = {
 		}
 	},
 	toDigital: (voltageValue) => {
-		if (voltageValue < icRanges.characteristics.max.Vil) return 0
-		if (voltageValue > icRanges.characteristics.min.Vih) return 1
-		return -1
+		if (voltageValue == undefined || Number.isNaN(voltageValue) || voltageValue == Infinity) return NaN
+		else if (voltageValue < icRanges.characteristics.max.Vil) return 0
+		else if (voltageValue > icRanges.characteristics.min.Vih) return 1
+		// console.log("Out")
+		return null
 	}
 	
 }

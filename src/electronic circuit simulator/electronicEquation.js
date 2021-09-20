@@ -248,6 +248,7 @@ export class BigElectronicEquation {
 		comp.index = 0
 		if (node != comp.nodes.a) this.#getMesh(eEq, comp.nodes.a)
 		if (node != comp.nodes.b) this.#getMesh(eEq, comp.nodes.b)
+		comp.globalNodes = {a: comp.nodes.a, b: comp.nodes.b}
 		comp.nodes.a = this.#getLocalNode(eEq, comp.nodes.a)
 		comp.nodes.b = this.#getLocalNode(eEq, comp.nodes.b)
 		eEq.pushComponent(comp)
@@ -283,7 +284,9 @@ export class BigElectronicEquation {
 		if (node == this.gndNode) return { bit: 0, voltage: num.prefix(0) }
 		else if (node == this.vccNode) return { bit: icRanges.toDigital(this.mainSource.V), voltage: num.prefix(this.mainSource.V) }
 		else if (comps && this.#compHasMeshAssigned(comps[0])) {
-			const V = comps[0].mesh.readV({ a: comps[0].nodes.a, b: 0 })
+			let localNode = comps[0].nodes.a
+			if (node == comps[0].globalNodes.b) localNode = comps[0].nodes.b
+			const V = comps[0].mesh.readV({ a: localNode, b: 0 })
 			return { bit: icRanges.toDigital(V), voltage: num.prefix(V) }
 		} else {
 			if (!node) throw Error("> eEq.readNode(undef)")

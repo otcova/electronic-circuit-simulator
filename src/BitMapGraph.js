@@ -9,6 +9,7 @@ const colors = {
 	background: [.1, .1, .1, 1],
 	on: [0.2, 0.9, 0.4, 1],
 	off: [0.92, 0.4, 0.2, 1],
+	error: [1, 0, 1, 1],
 }
 
 export function BitMapGraph(props) {
@@ -59,6 +60,7 @@ function BitMapGraphCanvas(props) {
 		
 		points[0].reset()
 		points[1].reset()
+		points[2].reset()
 		
 		for (let x = 0; x < rows; ++x) {
 			const dataX = x + Math.floor(offset)
@@ -69,7 +71,10 @@ function BitMapGraphCanvas(props) {
 					const posTopLeft = [x*columnW + boxOffset, y * rowH + 1]
 					const posBottomRight = [posTopLeft[0]+columnW-1, posTopLeft[1]+rowH-2]
 					
-					if (props.data[dataX][y]) points[1].quad(posTopLeft, posBottomRight)
+					const n = props.data[dataX][y]
+					
+					if (n == undefined || Number.isNaN(n)) points[2].quad(posTopLeft, posBottomRight)
+					else if (n) points[1].quad(posTopLeft, posBottomRight)
 					else points[0].quad(posTopLeft, posBottomRight)
 				}
 			}
@@ -81,6 +86,7 @@ function BitMapGraphCanvas(props) {
 
 		points.push(new QuadArray(canvas, colors.off))
 		points.push(new QuadArray(canvas, colors.on))
+		points.push(new QuadArray(canvas, colors.error))
 	}
 
 	return <WebGLCanvas onSetup={setup} onDraw={updateGraph} antialias={false} />
