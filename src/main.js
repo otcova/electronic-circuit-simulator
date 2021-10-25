@@ -159,7 +159,7 @@ const netsToWatch = [
 
 const processor = new Processor()
 
-const pushData = (e) {
+const pushData = (e) => {
 	for (let i = 0; i < (e.repeat ? 2 : 1); ++i) {
 		const slice = []
 		const state = processor.step()
