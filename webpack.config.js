@@ -8,7 +8,7 @@ module.exports = mode => {
 			index: path.resolve(__dirname, "src", "main.js")
 		},
 		output: {
-			path: path.resolve(__dirname, "dist"),
+			path: path.resolve(__dirname, "docs"),
 			filename: "[name].js",
 			sourceMapFilename: "[name].[fullhash].[chunkhash].[contenthash].js.map"
 		},
@@ -51,7 +51,7 @@ module.exports = mode => {
 		// watch: true,
 		devServer: {
 			static: {
-				directory: path.join(__dirname, 'dist'),
+				directory: path.join(__dirname, 'docs'),
 			},
 			// compress: true,
 			port: 80,
