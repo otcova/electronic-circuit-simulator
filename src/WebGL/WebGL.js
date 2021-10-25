@@ -54,8 +54,9 @@ export class WebGLCanvas extends React.Component {
 		this.timer = new Stopwatch()
 	}
 	render() {
+		
 		return <div ref={r => this.container = r} className="exp">
-			<canvas ref={r => this.htmlCanvas = r}></canvas>
+			<canvas ref={r => {this.props.canvas.current=r;this.htmlCanvas = r}} onMouseMove={this.props.onMouseMove}></canvas>
 		</div>
 	}
 	componentDidMount() {

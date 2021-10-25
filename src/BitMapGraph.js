@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as css from "./logic/style";
 import { num } from "./logic/math";
 import { QuadArray } from "./WebGL/simpleShapes";
 import { WebGLCanvas } from "./WebGL/WebGL";
+
+
+const mousePos = [0,0]
+document.addEventListener("mousemove", e=>{mousePos[0] = e.clientX; mousePos[1]=e.clientY})
 
 const colors = {
 	font: [.9, .9, .9],
@@ -10,12 +14,25 @@ const colors = {
 	on: [0.2, 0.9, 0.4, 1],
 	off: [0.92, 0.4, 0.2, 1],
 	error: [1, 0, 1, 1],
+	popUp: [.2, .2, .2, 1],
 }
 
 export function BitMapGraph(props) {
-	return <div className="exp row" style={{ ...css.padding(5), ...css.background(colors.background), ...css.border(colors.font) }}>
+	
+	const popup = useRef()
+	
+	const movePopup = useCallback(e => {
+		if (popup.current) {
+			popup.current.style.display = e.value != undefined? "block" : "none"
+			popup.current.style.left = (mousePos[0]) + "px"
+			popup.current.style.top = (mousePos[1] - popup.current.offsetHeight) + "px"
+			popup.current.innerHTML = e.value//(e.clientX - e.target.offsetLeft) / 5
+		}
+	})
+	return <div className="exp row" style={{ ...css.padding(5), ...css.color(colors.font,colors.background), ...css.border(colors.font) }}>
 		<BitMapGraphHeader header={props.header} />
-		<BitMapGraphCanvas data={props.data} header={props.header} />
+		<BitMapGraphCanvas data={props.data} header={props.header} onMouseMove={movePopup}/>
+		<div ref={popup} style={{position:"absolute",display:"none", ...css.border(colors.font),...css.padding(3),...css.padding(5,"lr"), ...css.background(colors.popUp)}}>23</div>
 	</div>
 }
 
@@ -43,19 +60,37 @@ function BitMapGraphCanvas(props) {
 	const [points] = useState([])
 	const pastDataLen = useRef(0)
 	
-	const updateGraph = canvas => {
+	const gridSize = useRef([0,0])
+	const offsetRef = useRef(0)
+	
+	const canvas = useRef()
+	
+	const updatePopup = useCallback(() => {
+		if (props.onMouseMove && canvas.current) {
+			
+			const x = Math.floor(offsetRef.current + (mousePos[0] - canvas.current.offsetLeft) / gridSize.current[0])
+			const y = Math.floor((mousePos[1] - canvas.current.offsetTop) / gridSize.current[1])
+			const value = props.data[x]? props.data[x][y] : undefined
+			props.onMouseMove({value})
+		}
+	})
+	
+	const updateGraph = useCallback(canvas => {
 		
 		if (pastDataLen.current != props.data.length)
 			pastDataLen.current = props.data.length
 		else return
-		
+			
+			
 		const columnW = 10
 		const rowH = canvas.size[1] / props.header.length
+		gridSize.current = [columnW, rowH]
 		const rows = canvas.size[0] / columnW + 1
 		const columns = props.header.length
 
 		let offset = Infinity//10 * canvas.frameCount / 60
 		offset = num.clamp(offset, 0, props.data.length - rows)
+		offsetRef.current = offset
 		const boxOffset = (-offset + Math.floor(offset))*columnW
 		
 		points[0].reset()
@@ -79,15 +114,18 @@ function BitMapGraphCanvas(props) {
 				}
 			}
 		}
-	}
+		updatePopup()
+	})
 	
-	const setup = canvas => {
+	const setup = useCallback(canvas => {
 		canvas.background = colors.background
 
 		points.push(new QuadArray(canvas, colors.off))
 		points.push(new QuadArray(canvas, colors.on))
 		points.push(new QuadArray(canvas, colors.error))
-	}
-
-	return <WebGLCanvas onSetup={setup} onDraw={updateGraph} antialias={false} />
+	})
+	
+	document.addEventListener("mousemove", updatePopup)
+	
+	return <WebGLCanvas onSetup={setup} onDraw={updateGraph} antialias={false} canvas={canvas}/>
 }
