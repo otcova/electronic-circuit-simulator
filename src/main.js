@@ -159,9 +159,7 @@ const netsToWatch = [
 
 const processor = new Processor()
 
-// for (let i = 0; i < 300; ++i) {
-// setInterval(() => {
-document.onkeydown = (e) => {
+const pushData = (e) {
 	for (let i = 0; i < (e.repeat ? 2 : 1); ++i) {
 		const slice = []
 		const state = processor.step()
@@ -170,13 +168,17 @@ document.onkeydown = (e) => {
 		data.push(slice)
 	}
 }
-// }, 100)
-// }
+// for (let i = 0; i < 300; ++i) {
+// setInterval(() => {
+document.onkeydown = pushData
+document.onclick = pushData
+	// }, 100)
+	// }
 
-//******************************************************************************//
+	//******************************************************************************//
 
-render((
-	<div className="exp" style={{ ...css.padding(10), ...css.background("#111") }}>
-		<BitMapGraph header={netsToWatch} data={data} />
-	</div>
-), document.getElementById("root"))
+	render((
+		<div className="exp" style={{ ...css.padding(10), ...css.background("#111") }}>
+			<BitMapGraph header={netsToWatch} data={data} />
+		</div>
+	), document.getElementById("root"))
