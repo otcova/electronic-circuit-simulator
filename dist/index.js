@@ -27,6 +27,10 @@ document.addEventListener("mousemove", e => {
   mousePos[0] = e.clientX;
   mousePos[1] = e.clientY;
 });
+document.addEventListener("touchmove", e => {
+  mousePos[0] = e.touches[0].clientX;
+  mousePos[1] = e.touches[0].clientY;
+});
 const colors = {
   font: [.9, .9, .9],
   background: [.1, .1, .1, 1],
@@ -31769,7 +31773,7 @@ document.onkeydown = pushData;
 let holdTimeout;
 let repeatInterval;
 
-document.onmousedown = () => {
+document.ontouchstart = () => {
   clearTimeout(holdTimeout);
   clearInterval(repeatInterval);
   pushData();
@@ -31780,7 +31784,7 @@ document.onmousedown = () => {
   }, 800);
 };
 
-document.onmouseup = () => {
+document.ontouchend = () => {
   clearTimeout(holdTimeout);
   clearInterval(repeatInterval);
 }; // }, 100)
@@ -31801,4 +31805,4 @@ document.onmouseup = () => {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.94e9990c0123fb2b8e34.74c8bd5607f863f49cf0.1b70b5490529f34a09817e37fd5cc74a.js.map

@@ -175,7 +175,7 @@ document.onkeydown = pushData
 let holdTimeout
 let repeatInterval
 
-document.onmousedown = () => {
+document.ontouchstart = () => {
 	clearTimeout(holdTimeout)
 	clearInterval(repeatInterval)
 	pushData()
@@ -185,7 +185,7 @@ document.onmousedown = () => {
 		}, 30)
 	}, 800)
 }
-document.onmouseup = () => {
+document.ontouchend = () => {
 	clearTimeout(holdTimeout)
 	clearInterval(repeatInterval)
 }

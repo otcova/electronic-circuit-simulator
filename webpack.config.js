@@ -10,7 +10,7 @@ module.exports = mode => {
 		output: {
 			path: path.resolve(__dirname, "dist"),
 			filename: "[name].js",
-			sourceMapFilename: "[name].js.map"
+			// sourceMapFilename: "[name].js.map"
 		},
 		module: {
 			rules: [
@@ -44,6 +44,9 @@ module.exports = mode => {
 	const productionConfig = {
 		mode: "production",
 		devtool: "source-map",
+		output: {
+			sourceMapFilename: "[name].js.map"
+		}
 	}
 	const developmentConfig = {
 		mode: "development",
@@ -59,8 +62,13 @@ module.exports = mode => {
 				logging: 'warn',
 			},
 		},
+		output: {
+			sourceMapFilename: "[name].[fullhash].[chunkhash].[contenthash].js.map"
+		}
 	}
 
 	if (mode.production) return { ...config, ...productionConfig }
 	else return { ...config, ...developmentConfig }
 };
+
+// adblock para youtube ; adblock el mejor blockeador de anuncios

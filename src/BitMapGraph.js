@@ -7,6 +7,7 @@ import { WebGLCanvas } from "./WebGL/WebGL";
 
 const mousePos = [0,0]
 document.addEventListener("mousemove", e=>{mousePos[0] = e.clientX; mousePos[1]=e.clientY})
+document.addEventListener("touchmove", e=>{mousePos[0] = e.touches[0].clientX; mousePos[1] = e.touches[0].clientY})
 
 const colors = {
 	font: [.9, .9, .9],
@@ -24,7 +25,7 @@ export function BitMapGraph(props) {
 	const movePopup = useCallback(e => {
 		if (popup.current) {
 			popup.current.style.display = e.value != undefined? "block" : "none"
-			popup.current.style.left = (mousePos[0]) + "px"
+			popup.current.style.left = mousePos[0] + "px"
 			popup.current.style.top = (mousePos[1] - popup.current.offsetHeight) + "px"
 			popup.current.innerHTML = e.value//(e.clientX - e.target.offsetLeft) / 5
 		}
