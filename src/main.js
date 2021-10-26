@@ -159,7 +159,7 @@ const netsToWatch = [
 
 const processor = new Processor()
 
-const pushData = (e) => {
+const pushData = (e={}) => {
 	for (let i = 0; i < (e.repeat ? 2 : 1); ++i) {
 		const slice = []
 		const state = processor.step()
@@ -171,7 +171,25 @@ const pushData = (e) => {
 // for (let i = 0; i < 300; ++i) {
 // setInterval(() => {
 document.onkeydown = pushData
-document.onclick = pushData
+
+let holdTimeout
+let repeatInterval
+
+document.onmousedown = () => {
+	clearTimeout(holdTimeout)
+	clearInterval(repeatInterval)
+	pushData()
+	holdTimeout = setTimeout(() => {
+		repeatInterval = setInterval(() => {
+			pushData()
+		}, 30)
+	}, 800)
+}
+document.onmouseup = () => {
+	clearTimeout(holdTimeout)
+	clearInterval(repeatInterval)
+}
+
 	// }, 100)
 	// }
 

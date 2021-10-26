@@ -10,7 +10,7 @@ module.exports = mode => {
 		output: {
 			path: path.resolve(__dirname, "dist"),
 			filename: "[name].js",
-			sourceMapFilename: "[name].[fullhash].[chunkhash].[contenthash].js.map"
+			sourceMapFilename: "[name].js.map"
 		},
 		module: {
 			rules: [

@@ -31752,7 +31752,7 @@ const data = [];
 const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "I-write", "rc-inc", "rc-write", "rc-read", "ra-write", "ra-read", "rb-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "rc", "r0", "r1", "r2", "r3"];
 const processor = new _CPUClass__WEBPACK_IMPORTED_MODULE_3__.Processor();
 
-const pushData = e => {
+const pushData = (e = {}) => {
   for (let i = 0; i < (e.repeat ? 2 : 1); ++i) {
     const slice = [];
     const state = processor.step();
@@ -31766,9 +31766,27 @@ const pushData = e => {
 
 
 document.onkeydown = pushData;
-document.onclick = pushData; // }, 100)
+let holdTimeout;
+let repeatInterval;
+
+document.onmousedown = () => {
+  clearTimeout(holdTimeout);
+  clearInterval(repeatInterval);
+  pushData();
+  holdTimeout = setTimeout(() => {
+    repeatInterval = setInterval(() => {
+      pushData();
+    }, 30);
+  }, 800);
+};
+
+document.onmouseup = () => {
+  clearTimeout(holdTimeout);
+  clearInterval(repeatInterval);
+}; // }, 100)
 // }
 //******************************************************************************//
+
 
 (0,react_dom__WEBPACK_IMPORTED_MODULE_1__.render)( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "exp",
@@ -31783,4 +31801,4 @@ document.onclick = pushData; // }, 100)
 
 /******/ })()
 ;
-//# sourceMappingURL=index.1567ff100987b6248be9.13818a5a8d826268256d.511572b51f310a2370ac33897eb2dfa6.js.map
+//# sourceMappingURL=index.js.map
