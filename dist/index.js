@@ -31993,6 +31993,9 @@ class Computer {
 function Header(props) {
   const [frequency, setFrequency] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(props.computer.frequency);
   const playStopRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (frequency != props.computer.frequency) setFrequency(props.computer.frequency);
+  }, [props.computer.frequency]);
   const updateFrequency = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(e => {
     const newValue = e.target.value.replace(/[^0-9]/g, '');
 
@@ -32086,4 +32089,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.5b20009ae8f2e67a9b36.4df7865d8e31e57d0368.0a36fe0f1953f8dc16aaab3ad7d24111.js.map
+//# sourceMappingURL=index.2f31bbed923835ea9cf7.76f3e3025dd0be443b55.2844a9beb2400332f949bdf79b2b2e8c.js.map

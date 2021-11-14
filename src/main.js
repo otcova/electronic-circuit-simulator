@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { render } from "react-dom"
 import { BitMapGraph, BitMapSlideGraph } from "./BitMapGraph"
 import { Processor, programs, setActiveProgramIndex } from "./CPUClass";
@@ -41,7 +41,11 @@ class Computer {
 function Header(props) {
 	const [frequency, setFrequency] = useState(props.computer.frequency)
 	const playStopRef = useRef()
-
+	
+	useEffect(() => {
+		if (frequency != props.computer.frequency)
+			setFrequency(props.computer.frequency)
+	}, [props.computer.frequency])
 
 
 	const updateFrequency = useCallback(e => {
