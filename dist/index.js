@@ -10,6 +10,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BitMapSlideGraph": () => (/* binding */ BitMapSlideGraph),
 /* harmony export */   "BitMapGraph": () => (/* binding */ BitMapGraph)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
@@ -17,6 +18,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _logic_math__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logic/math */ "./src/logic/math.js");
 /* harmony import */ var _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./WebGL/simpleShapes */ "./src/WebGL/simpleShapes.js");
 /* harmony import */ var _WebGL_WebGL__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./WebGL/WebGL */ "./src/WebGL/WebGL.js");
+/* harmony import */ var _logic_vec__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./logic/vec */ "./src/logic/vec.js");
+
 
 
 
@@ -39,7 +42,7 @@ const colors = {
   error: [1, 0, 1, 1],
   popUp: [.2, .2, .2, 1]
 };
-function BitMapGraph(props) {
+function BitMapSlideGraph(props) {
   const popup = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
   const movePopup = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(e => {
     if (popup.current) {
@@ -51,25 +54,21 @@ function BitMapGraph(props) {
   });
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "exp row",
-    style: { ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.padding(5),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.color(colors.font, colors.background),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.border(colors.font)
-    }
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_1__.css.padding(5).color(colors.font, colors.background).border(colors.font).hide(props.hide)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(BitMapGraphHeader, {
     header: props.header
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(BitMapGraphCanvas, {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_1__.css.shrink().exp()
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(BitMapGraphCanvas, {
+    update: !props.hide,
     data: props.data,
     header: props.header,
     onMouseMove: movePopup
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     ref: popup,
     style: {
       position: "absolute",
-      display: "none",
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.border(colors.font),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.padding(3),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.padding(5, "lr"),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.background(colors.popUp)
+      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.css.hide().border(colors.font).padding(3).padding(5, "lr").background(colors.popUp)
     }
   }, "23"));
 }
@@ -79,15 +78,15 @@ function BitMapGraphHeader(props) {
     className: "column nowrap",
     style: {
       flexShrink: 0,
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.size("fit-content", "100%"),
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.color(colors.font, colors.background)
+      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.css.size("fit-content", "100%"),
+      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.css.color(colors.font, colors.background)
     }
   }, props.header.map((title, i) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Text, {
     key: i,
     className: "exp",
     style: {
       textAlign: "right",
-      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.padding(10, "r")
+      ..._logic_style__WEBPACK_IMPORTED_MODULE_1__.css.padding(10, "r").shrink()
     },
     txt: title
   })));
@@ -130,7 +129,10 @@ function BitMapGraphCanvas(props) {
     }
   });
   const updateGraph = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(canvas => {
-    if (pastDataLen.current != props.data.length) pastDataLen.current = props.data.length;else return;
+    if (!props.update) return; // if (pastDataLen.current != props.data.length)
+    // 	pastDataLen.current = props.data.length
+    // else return
+
     const columnW = 10;
     const rowH = canvas.size[1] / props.header.length;
     gridSize.current = [columnW, rowH];
@@ -142,8 +144,7 @@ function BitMapGraphCanvas(props) {
     offsetRef.current = offset;
     const boxOffset = (-offset + Math.floor(offset)) * columnW;
     points[0].reset();
-    points[1].reset();
-    points[2].reset();
+    points[1].reset(); // points[2].reset()
 
     for (let x = 0; x < rows; ++x) {
       const dataX = x + Math.floor(offset);
@@ -154,7 +155,7 @@ function BitMapGraphCanvas(props) {
           const posTopLeft = [x * columnW + boxOffset, y * rowH + 1];
           const posBottomRight = [posTopLeft[0] + columnW - 1, posTopLeft[1] + rowH - 2];
           const n = props.data[dataX][y];
-          if (n == undefined || Number.isNaN(n)) points[2].quad(posTopLeft, posBottomRight);else if (n) points[1].quad(posTopLeft, posBottomRight);else points[0].quad(posTopLeft, posBottomRight);
+          if (n == undefined || Number.isNaN(n)) points[0].quad(posTopLeft, posBottomRight);else if (n) points[1].quad(posTopLeft, posBottomRight);else points[0].quad(posTopLeft, posBottomRight);
         }
       }
     }
@@ -164,8 +165,7 @@ function BitMapGraphCanvas(props) {
   const setup = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(canvas => {
     canvas.background = colors.background;
     points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.off));
-    points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.on));
-    points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.error));
+    points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.on)); // points.push(new QuadArray(canvas, colors.error))
   });
   document.addEventListener("mousemove", updatePopup);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_WebGL_WebGL__WEBPACK_IMPORTED_MODULE_4__.WebGLCanvas, {
@@ -173,6 +173,35 @@ function BitMapGraphCanvas(props) {
     onDraw: updateGraph,
     antialias: false,
     canvas: canvas
+  });
+}
+
+function BitMapGraph(props) {
+  const [points] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const setup = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(canvas => {
+    canvas.background = colors.background;
+    points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.off));
+    points.push(new _WebGL_simpleShapes__WEBPACK_IMPORTED_MODULE_3__.QuadArray(canvas, colors.on));
+  });
+  const updateGraph = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(canvas => {
+    for (const p of points) p.reset();
+
+    const data = Array(64).fill(0).map(() => Array(32).fill(0));
+    const scale = Math.min(canvas.size[0] / data.length, canvas.size[1] / data[0].length);
+    const spacing = 1;
+    const offset = _logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.scale(_logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.sub(canvas.size, [scale * data.length, scale * data[0].length]), .5);
+
+    for (let x = 0; x < data.length; ++x) {
+      for (let y = 0; y < data[0].length; ++y) {
+        const bit = props.data[Math.floor(y / 8) * data.length + x] & 1 << y % 8 ? 1 : 0;
+        points[bit].quad(_logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([x * scale, y * scale], offset), _logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([(x + 1) * scale - spacing, (y + 1) * scale - spacing], offset));
+      }
+    }
+  });
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_WebGL_WebGL__WEBPACK_IMPORTED_MODULE_4__.WebGLCanvas, {
+    onSetup: setup,
+    onDraw: updateGraph,
+    antialias: false
   });
 }
 
@@ -187,13 +216,23 @@ function BitMapGraphCanvas(props) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "programs": () => (/* binding */ programs),
+/* harmony export */   "setActiveProgramIndex": () => (/* binding */ setActiveProgramIndex),
 /* harmony export */   "Processor": () => (/* binding */ Processor)
 /* harmony export */ });
+/* harmony import */ var _compiler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compiler */ "./src/compiler.js");
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
+
+const programs = [["Fibonacci", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["r0 = 0", "r1 = 1", "r3 = 16", ":loop", "r3 = r3 + 1", "M[r3] = r0", "r2 = r1", "r1 = r1 + r0", "r0 = r2", "jmp :loop"])], ["Snake Game", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "255", ":inputPtr", "0", ":loop", "r0 = :snakeEndPtr", "r1 = 0", "r2 = :ret1", "jmp :drawPoint", ":ret1", "r0 = :snakeStartPtr", "r3 = M[r0]", "r3 = M[r3]", "r1 = :snakeEndPtr", "r2 = M[r1]", "r2 = r2 + 1", "jc :sei", "jmp :sen", ":sei", "r2 = 190", ":sen", "M[r1] = r2", "r1 = M[r0]", "r1 = r1 + 1", "jc :ssi", "jmp :ssn", ":ssi", "r1 = 190", ":ssn", "M[r0] = r1", "r2 = :inputPtr", "r2 = M[r2]", "r3 = r3 + r2", "M[r1] = r3", "r0 = :snakeStartPtr", "r1 = 1", "r2 = :loop", "jmp :drawPoint", "jmp :loop", ":drawPoint", "r3 = :returnPtr", "M[r3] = r2", "r0 = M[r0]", "r0 = M[r0]", "r3 = 0b11111000", "r2 = r0", "r2 = r2 & r3", "r2 = r2 >> 1", "r2 = r2 >> 1", "r2 = r2 >> 1", "r3 = 0b111", "r0 = r0 & r3", "r3 = 1", "r0 = r0", ":while", "jz :while exit", "r3 = r3 + r3", "r0 = r0 - 1", "jmp :while", ":while exit", "r0 = M[r2]", "r0 = r0 | r3", "r1 = r1", "jz :clear", "jmp :skip clear", ":clear", "r3 = ~r3", "r0 = r0 & r3", "jmp :continue clear if", ":skip clear", "r1 = M[r2]", "r1 = r1 & r3", "jz :continue clear if", "jmp :death", ":continue clear if", "M[r2] = r0", "r3 = :returnPtr", "r0 = M[r3]", "jmp r0 (r1)", "jmp :loop", ":death", "jmp :death", ":returnPtr", "0", ":snakeStartPtr", "195", ":snakeEndPtr", "190", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19"])]];
+let activeProgramIndex = 0;
+function setActiveProgramIndex(index) {
+  activeProgramIndex = index;
+}
 
 class CompI {
   constructor(board) {
@@ -276,21 +315,25 @@ class CompALU {
   }
 
   step() {
-    const a = this.board.get("busA");
     const b = this.board.get("busB");
-    const opCode = (this.board.get("I") & 0b1110000) >> 4;
-    let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode];
-    let result = 0;
-    if (opName == "rb") result = b;
-    if (opName == "&") result = a & b;
-    if (opName == "|") result = a | b;
-    if (opName == "+") result = a + b;
-    if (opName == "~") result = ~b;
-    if (opName == ">>1") result = b >> 1;
-    if (opName == "+1") result = b + 1;
-    if (opName == "-1") result = b - 1;
-    result = _classPrivateMethodGet(this, _setFlagsAndCut, _setFlagsAndCut2).call(this, result);
-    if (this.board.get("alu-read")) this.board.set("busD", result);
+
+    if (this.board.get("alu-read")) {
+      const a = this.board.get("busA");
+      const opCode = (this.board.get("I") & 0b1110000) >> 4;
+      let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode];
+      let result = 0;
+      if (opName == "rb") result = b;
+      if (opName == "&") result = a & b;
+      if (opName == "|") result = a | b;
+      if (opName == "+") result = a + b;
+      if (opName == "~") result = ~b;
+      if (opName == ">>1") result = b >> 1;
+      if (opName == "+1") result = b + 1;
+      if (opName == "-1") result = b - 1;
+      result = _classPrivateMethodGet(this, _setFlagsAndCut, _setFlagsAndCut2).call(this, result);
+      this.board.set("busD", result);
+    }
+
     this.board.set("alu-incremented", b + 1);
     this.board.write(this.flags);
   }
@@ -304,40 +347,32 @@ function _setFlagsAndCut2(number) {
   return number & 0xFF;
 }
 
+let memory = null;
+
+document.onkeydown = e => {
+  if (memory) {
+    if (e.key.toLowerCase() == "a" || e.key == "ArrowLeft") memory[33] = 0b11111000;
+    if (e.key.toLowerCase() == "d" || e.key == "ArrowRight") memory[33] = 0b00001000;
+    if (e.key.toLowerCase() == "w" || e.key == "ArrowUp") memory[33] = 0b11111111;
+    if (e.key.toLowerCase() == "s" || e.key == "ArrowDown") memory[33] = 0b00000001;
+  }
+};
+
 class CompM {
   constructor(board) {
     this.board = board;
     this.memory = new Int16Array(256);
-    this.memory.set([0b10100000, 3, // r0 = 3
-    0b10100001, 4, // r1 = 4
-    0b00110100 // r0 = r0 + r1
-    ]);
-    this.memory.set([0b10100000, 0, // r0 = 0
-    0b10100001, 1, // r1 = 1
-    // :loop
-    0b00000110, // r2 = r1
-    0b00110001, // r1 = r1 + r0
-    0b00001000, // r0 = r2
-    0b11000000, 4 // goto loop
-    ]); // this.memory.set([
-    // 	0b11000000, 110,    // goto loop
-    // ])
-    // r0 = 0
-    // r1 = 1
-    // 
-    // :loop
-    // 
-    // r2 = r1
-    // r1 = r1 + r0
-    // r0 = r2
-    // 
-    // goto loop
+    this.memory.set(programs[activeProgramIndex][1]);
+    memory = this.memory;
   }
 
   step() {
     const address = this.board.get("busB");
     if (this.board.get("M-read")) this.board.set("busD", this.memory[address]);
-    if (this.board.get("M-write") && this.board.get("write")) this.board.set("busD", this.board.get("busA"));
+
+    if (this.board.get("M-write") && this.board.get("write")) {
+      this.memory[address] = this.board.get("busA");
+    }
   }
 
 }
@@ -598,8 +633,8 @@ class WebGLCanvas extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
       className: "exp"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("canvas", {
       ref: r => {
-        this.props.canvas.current = r;
         this.htmlCanvas = r;
+        if (this.props.canvas) this.props.canvas.current = r;
       },
       onMouseMove: this.props.onMouseMove
     }));
@@ -993,6 +1028,101 @@ class QuadArray {
 
 /***/ }),
 
+/***/ "./src/compiler.js":
+/*!*************************!*\
+  !*** ./src/compiler.js ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "compile": () => (/* binding */ compile)
+/* harmony export */ });
+const instructions = new Map();
+window.ins = instructions; //ALU Read Write
+
+for (let a = 0; a < 4; ++a) {
+  for (let b = 0; b < 4; ++b) {
+    instructions.set(`r${a} = r${b}`, (b << 2) + a);
+    instructions.set(`r${a} = r${a} & r${b}`, 16 + (b << 2) + a);
+    instructions.set(`r${a} = r${a} | r${b}`, 32 + (b << 2) + a);
+    instructions.set(`r${a} = r${a} + r${b}`, 48 + (b << 2) + a);
+    instructions.set(`r${a} = ~r${b}`, 64 + (b << 2) + a);
+    instructions.set(`r${a} = r${b} >> 1`, 80 + (b << 2) + a);
+    instructions.set(`r${a} = r${b} + 1`, 96 + (b << 2) + a);
+    instructions.set(`r${a} = r${b} - 1`, 112 + (b << 2) + a);
+    instructions.set(`M[r${b}] = r${a}`, 144 + (b << 2) + a);
+    instructions.set(`r${a} = M[r${b}]`, 128 + (b << 2) + a);
+  }
+} //Branch Const
+
+
+for (let n = 0; n < 256; ++n) {
+  instructions.set(`${n}`, n);
+  instructions.set(`jmp ${n}`, [192, n]);
+  instructions.set(`jz ${n}`, [208, n]);
+  instructions.set(`jc ${n}`, [224, n]);
+  instructions.set(`jn ${n}`, [240, n]);
+} // Load
+
+
+for (let a = 0; a < 4; ++a) {
+  for (let n = 0; n < 256; ++n) {
+    instructions.set(`r${a} = ${n}`, [160 + a, n]);
+    instructions.set(`r${a} = 0b${n.toString(2)}`, [160 + a, n]);
+    instructions.set(`r${a} = 0x${n.toString(16)}`, [160 + a, n]);
+  }
+}
+
+for (let a = 0; a < 4; ++a) {
+  for (let b = 0; b < 4; ++b) {
+    if (a != b) {
+      instructions.set(`jmp r${a} (r${b})`, [instructions.get(`r${b} = 0`)[0], "3", instructions.get(`M[r${b}] = r${a}`), instructions.get(`jmp 0`)[0], 0]);
+    }
+  }
+}
+
+function getInstCode(inst) {
+  const n = instructions.get(inst);
+  if (n == undefined) console.error(">", inst);
+  if (typeof n == "number") return [n];
+  return n;
+}
+
+function loadConstants(src) {
+  const constants = new Map();
+  let index = 0;
+
+  for (let inst of src) {
+    if (inst) {
+      if (inst.startsWith(":")) constants.set(inst, index);else {
+        if (inst.includes(":")) inst = inst.split(":")[0] + "0";
+        index += getInstCode(inst).length;
+      }
+    }
+  }
+
+  return constants;
+}
+
+function compile(src) {
+  const machineCode = [];
+  const constants = loadConstants(src);
+
+  for (let inst of src) {
+    if (inst && !inst.startsWith(":")) {
+      if (inst.includes(":")) inst = inst.split(":")[0] + constants.get(":" + inst.split(":")[1]);
+
+      for (const instCode of getInstCode(inst)) machineCode.push(typeof instCode == "string" ? machineCode.length + Number(instCode) : instCode);
+    }
+  }
+
+  return machineCode;
+}
+
+/***/ }),
+
 /***/ "./src/logic/Stopwatch.js":
 /*!********************************!*\
   !*** ./src/logic/Stopwatch.js ***!
@@ -1185,59 +1315,253 @@ class SystemEquations {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "border": () => (/* binding */ border),
-/* harmony export */   "size": () => (/* binding */ size),
-/* harmony export */   "background": () => (/* binding */ background),
-/* harmony export */   "color": () => (/* binding */ color),
-/* harmony export */   "padding": () => (/* binding */ padding),
-/* harmony export */   "margin": () => (/* binding */ margin)
+/* harmony export */   "css": () => (/* binding */ css)
 /* harmony export */ });
 /* harmony import */ var _vec__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./vec */ "./src/logic/vec.js");
 
-function border(color = "#333", collapse = "") {
-  const style = {
-    border: "1px solid" + _vec__WEBPACK_IMPORTED_MODULE_0__.vec.toColor(color)
-  };
-  if (collapse.includes("r")) style.marginRight = -1;
-  if (collapse.includes("l")) style.marginLeft = -1;
-  if (collapse.includes("u")) style.marginUp = -1;
-  if (collapse.includes("b")) style.marginBottom = -1;
-  return style;
+
+function toColor(c) {
+  if (typeof c == "string") return c;
+  if (c.length == 1) return "#" + Math.round(255 * c[0]).toString(16).repeat(3);
+  if (c.length == 2) return "#" + Math.round(255 * c[0]).toString(16).repeat(3) + Math.round(255 * c[1]).toString(16);
+  if (c.length == 3) return "#" + Math.round(255 * c[0]).toString(16) + Math.round(255 * c[1]).toString(16) + Math.round(255 * c[2]).toString(16);
+  if (c.length == 4) return "#" + Math.round(255 * c[0]).toString(16) + Math.round(255 * c[1]).toString(16) + Math.round(255 * c[2]).toString(16) + Math.round(255 * c[3]).toString(16);
+  return NaN;
 }
-function size(width, height) {
-  return {
-    width,
-    height
-  };
+
+class Css {
+  constructor(css, newProps) {
+    if (!css) return;
+    Object.assign(this, css);
+    Object.assign(this, newProps);
+  } ///////
+
+
+  exp() {
+    return this.size("100%", "100%");
+  }
+
+  expX() {
+    return new Css(this, {
+      width: "100%"
+    });
+  }
+
+  expY() {
+    return new Css(this, {
+      height: "100%"
+    });
+  } ///////
+
+
+  sizeX(width) {
+    return new Css(this, {
+      width
+    });
+  }
+
+  sizeY(height) {
+    return new Css(this, {
+      height
+    });
+  }
+
+  size(size, height) {
+    if (size == "%") size = "100%";
+
+    if (height == undefined) {
+      if (size == undefined) return new Css(this, {
+        width: undefined,
+        height: undefined
+      });
+      if (Array.isArray(size)) return new Css(this, {
+        width: size[0],
+        height: size[0]
+      });
+      return new Css(this, {
+        width: size,
+        height: size
+      });
+    }
+
+    if (height == "%") height = "100%";
+    return new Css(this, {
+      width: size,
+      height
+    });
+  }
+
+  floatLeft() {
+    return new Css(this, {
+      float: "left"
+    });
+  }
+
+  floatRight() {
+    return new Css(this, {
+      float: "right"
+    });
+  }
+
+  noScroll() {
+    return new Css(this, {
+      scroll: "none"
+    });
+  }
+
+  background(color) {
+    return new Css(this, {
+      backgroundColor: toColor(color)
+    });
+  }
+
+  color(color, background) {
+    if (background) return new Css(this, {
+      color: toColor(color),
+      backgroundColor: toColor(background)
+    });
+    return new Css(this, {
+      color: toColor(color)
+    });
+  }
+
+  padding(value, direction = "tblr") {
+    const style = {};
+    if (direction.includes("t")) style.paddingTop = value;
+    if (direction.includes("b")) style.paddingBottom = value;
+    if (direction.includes("l")) style.paddingLeft = value;
+    if (direction.includes("r")) style.paddingRight = value;
+    return new Css(this, style);
+  }
+
+  margin(value, direction = "tblr") {
+    const style = {};
+    if (direction.includes("t")) style.marginTop = value;
+    if (direction.includes("b")) style.marginBottom = value;
+    if (direction.includes("l")) style.marginLeft = value;
+    if (direction.includes("r")) style.marginRight = value;
+    return new Css(this, style);
+  }
+
+  noOutline() {
+    return new Css(this, {
+      outline: "none"
+    });
+  }
+
+  noBorder() {
+    return new Css(this, {
+      border: "none"
+    });
+  }
+
+  border(color = "#000", width = 1, direction = "tblr") {
+    color = toColor(color);
+    const style = {};
+
+    if (direction.includes("t")) {
+      style.borderTopWidth = width;
+      style.borderTopStyle = "solid";
+      style.borderTopColor = color;
+    }
+
+    if (direction.includes("b")) {
+      style.borderBottomWidth = width;
+      style.borderBottomStyle = "solid";
+      style.borderBottomColor = color;
+    }
+
+    if (direction.includes("l")) {
+      style.borderLeftWidth = width;
+      style.borderLeftStyle = "solid";
+      style.borderLeftColor = color;
+    }
+
+    if (direction.includes("r")) {
+      style.borderRightWidth = width;
+      style.borderRightStyle = "solid";
+      style.borderRightColor = color;
+    }
+
+    return new Css(this, style);
+  }
+
+  scrollY(when = "auto") {
+    return new Css(this, {
+      overflowY: when
+    });
+  } //////
+
+
+  hide(hide = true) {
+    if (!hide) return this;
+    return new Css(this, {
+      display: "none"
+    });
+  }
+
+  column(alignItems = "center") {
+    if (alignItems == "left") alignItems = "flex-start";else if (alignItems == "right") alignItems = "flex-end";
+    return new Css(this, {
+      display: "flex",
+      flexDirection: "column",
+      alignItems
+    });
+  }
+
+  row(alignItems = "center", justifyContent = "left") {
+    if (alignItems == "left") alignItems = "flex-start";else if (alignItems == "right") alignItems = "flex-end";
+    if (alignItems == "top") alignItems = "flex-start";else if (alignItems == "bottom") alignItems = "flex-end";
+    return new Css(this, {
+      display: "flex",
+      flexDirection: "row",
+      alignItems,
+      justifyContent
+    });
+  }
+
+  shrink(flexShrink = 1) {
+    return new Css(this, {
+      flexShrink
+    });
+  } /// ALIGN
+
+
+  font(fontSize, textAlign) {
+    if (typeof fontSize == "number") fontSize += "rem";
+    return new Css(this, {
+      fontSize,
+      textAlign,
+      whiteSpace: "pre-wrap"
+    });
+  }
+
+  textAlign(textAlign = "center") {
+    return new Css(this, {
+      textAlign
+    });
+  }
+
+  lineHeight(lineHeight = 1) {
+    return new Css(this, {
+      lineHeight
+    });
+  }
+
+  lineCap(maxLines = 2) {
+    return new Css(this, {
+      display: "-webkit-box",
+      WebkitBoxOrient: "vertical",
+      WebkitLineClamp: maxLines,
+      textOverflow: "ellipsis",
+      overflow: "hidden"
+    });
+  }
+
 }
-function background(color) {
-  return {
-    backgroundColor: _vec__WEBPACK_IMPORTED_MODULE_0__.vec.toColor(color)
-  };
-}
-function color(font, background) {
-  const style = {
-    color: _vec__WEBPACK_IMPORTED_MODULE_0__.vec.toColor(font)
-  };
-  if (background) style.backgroundColor = _vec__WEBPACK_IMPORTED_MODULE_0__.vec.toColor(background);
-  return style;
-}
-function padding(value, direction = "burl") {
-  const style = {};
-  if (direction.includes("r")) style.paddingRight = value;
-  if (direction.includes("l")) style.paddingLeft = value;
-  if (direction.includes("u")) style.paddingTop = value;
-  if (direction.includes("b")) style.paddingBottom = value;
-  return style;
-}
-function margin(value, direction = "burl") {
-  const style = {};
-  if (direction.includes("r")) style.marginRight = value;
-  if (direction.includes("l")) style.marginLeft = value;
-  if (direction.includes("u")) style.marginTop = value;
-  if (direction.includes("b")) style.marginBottom = value;
-  return style;
-}
+
+const css = new Css();
+window.css = css;
 
 /***/ }),
 
@@ -31629,180 +31953,137 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // import schematicSrc from "./electronic circuit simulator/schematic/schematic.net"
-// import { Ic, IcCircuit, IcSwitch } from "./electronic circuit simulator/IcCircuit";
-// import { decodeSchematicSrc } from "./electronic circuit simulator/schematic/schematicDecoder";
-// const data = []
-// const netsToWatch = [
-// 	"CLK",
-// 	"halted",
-// 	"RESET",
-// 	"",
-// 	"phase-fetch",
-// 	"phase-exe",
-// 	// "",
-// 	// "stage.0",
-// 	// "stage.1",
-// 	"",
-// 	"stage-decode",
-// 	"stage-set",
-// 	"stage-calc",
-// 	"stage-get",
-// 	"",
-// 	"RI.",
-// 	"RC.",
-// 	// "PRE-RC.",
-// 	"",
-// 	"R0.",
-// 	"R1.",
-// 	"R2.",
-// 	"R3.",
-// 	"",
-// 	"Adder-num.",
-// 	// "Adder-carry.",
-// 	"Adder-result.",
-// 	"setD-Adder",
-// 	"",
-// 	"BusA.",
-// 	"BusB.",
-// 	"BusD.",
-// 	"",
-// 	"BusIO.",
-// 	"M-Page.",
-// 	"enable-Device-0",
-// 	"M-Read#",
-// 	"",
-// 	"Flag-carry",
-// 	"Flag-neg",
-// 	"Flag-zero",
-// 	"flag-is-true",
-// 	"jmp",
-// 	"jz",
-// 	"jc",
-// 	"jn",
-// 	"",
-// 	"I-BinALU",
-// 	"I-Read",
-// 	"I-Write",
-// 	"I-Mi=RA",
-// 	"I-UnyALU",
-// 	"I-RA=#",
-// 	"I-Branch",
-// 	"",
-// 	"getD-RA",
-// 	"getINC-RC",
-// 	"setAB-GPR",
-// 	"setAB-RC",
-// 	"M-Read",
-// ]
 
-/*
-const schematic = decodeSchematicSrc(schematicSrc)
-
-const gndNode = schematic.nets.indexOf("GND")
-const ledGndNode = schematic.nets.indexOf("LED-GND")
-for (const ic of schematic.ics) {
-	ic.pinsNode = ic.pinsNode.map(e => e == ledGndNode ? gndNode : e)
-}
-
-
-
-const icc = new IcCircuit("+3V")
-icc.loadSchematic(schematic)
-
-const btnReset = new IcSwitch(icc, "RESET").high()
-const btnClk = new IcSwitch(icc, "CLK").low()
-
-let stepCount = 0
-const intervalId = setInterval(() => {
-	icc.step()
-	
-	icc.logNetComps("CLK")
-	
-	++stepCount
-	if (stepCount % 5 == 0) btnClk.switch()
-	if (stepCount > 4) btnReset.low()
-	
-	const slice = []
-	for (const net of netsToWatch) {
-		// slice.push(Math.round(Math.random()))
-		if (net == "") slice.push(0)
-		else if (!net.endsWith(".")) {
-			slice.push(icc.readNode(net.toUpperCase()).bit)
-		}
-		else {
-			let bit = 0
-			
-			for (let i = 0; i < 8; ++i) {
-				if (icc.readNode(net.toUpperCase()+i).bit) {
-					bit = 1
-					break
-				}
-			}
-					
-			slice.push(bit)
-		}
-	}
-	data.push(slice)
-}, 1000)
-
-window.s = () => {
-	clearInterval(intervalId)
-}
-
-*/
-
-const data = [];
 const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "I-write", "rc-inc", "rc-write", "rc-read", "ra-write", "ra-read", "rb-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "rc", "r0", "r1", "r2", "r3"];
-const processor = new _CPUClass__WEBPACK_IMPORTED_MODULE_3__.Processor();
 
-const pushData = (e = {}) => {
-  for (let i = 0; i < (e.repeat ? 2 : 1); ++i) {
+class Computer {
+  constructor(programIndex) {
+    (0,_CPUClass__WEBPACK_IMPORTED_MODULE_3__.setActiveProgramIndex)(programIndex);
+    this.processor = new _CPUClass__WEBPACK_IMPORTED_MODULE_3__.Processor();
+    this.programIndex = programIndex;
+    this.interval = 0;
+    this.frequency = 60;
+    this.wireData = [];
+  }
+
+  step() {
     const slice = [];
-    const state = processor.step();
+    const state = this.processor.step();
 
     for (const net of netsToWatch) slice.push(state.get(net));
 
-    data.push(slice);
+    this.wireData.push(slice);
+    if (this.wireData.length > 500) this.wireData.shift();
   }
-}; // for (let i = 0; i < 300; ++i) {
-// setInterval(() => {
 
-
-document.onkeydown = pushData;
-let holdTimeout;
-let repeatInterval;
-
-document.ontouchstart = () => {
-  clearTimeout(holdTimeout);
-  clearInterval(repeatInterval);
-  pushData();
-  holdTimeout = setTimeout(() => {
-    repeatInterval = setInterval(() => {
-      pushData();
-    }, 30);
-  }, 800);
-};
-
-document.ontouchend = () => {
-  clearTimeout(holdTimeout);
-  clearInterval(repeatInterval);
-}; // }, 100)
-// }
-//******************************************************************************//
-
-
-(0,react_dom__WEBPACK_IMPORTED_MODULE_1__.render)( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-  className: "exp",
-  style: { ..._logic_style__WEBPACK_IMPORTED_MODULE_4__.padding(10),
-    ..._logic_style__WEBPACK_IMPORTED_MODULE_4__.background("#111")
+  play() {
+    this.stop();
+    const div = Math.min(60, this.frequency);
+    this.interval = setInterval(() => {
+      for (let i = 0; i < this.frequency / div; ++i) this.step();
+    }, 1000 / div);
   }
-}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_BitMapGraph__WEBPACK_IMPORTED_MODULE_2__.BitMapGraph, {
-  header: netsToWatch,
-  data: data
-})), document.getElementById("root"));
+
+  stop() {
+    clearInterval(this.interval);
+  }
+
+}
+
+function Header(props) {
+  const [frequency, setFrequency] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(props.computer.frequency);
+  const playStopRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+  const updateFrequency = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(e => {
+    const newValue = e.target.value.replace(/[^0-9]/g, '');
+
+    if (newValue != frequency) {
+      setFrequency(newValue);
+      props.computer.frequency = Number(newValue) || 0;
+      if (playStopRef.current.innerText != "▶") props.computer.play();
+    }
+  });
+  const onPlayPauseStep = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(e => {
+    if (e.target.innerText == "▶") {
+      playStopRef.current.innerText = "❚❚";
+      playStopRef.current.style.paddingLeft = "5.1px";
+      playStopRef.current.style.paddingTop = "5px";
+      props.computer.play();
+    } else {
+      playStopRef.current.innerText = "▶";
+      playStopRef.current.style.paddingLeft = "6px";
+      playStopRef.current.style.paddingTop = "6px";
+      props.computer.stop();
+      if (e.target.innerText == "Step") props.computer.step();
+    }
+  });
+  const onChangeProgram = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
+    playStopRef.current.innerText = "▶";
+    playStopRef.current.style.paddingLeft = "6px";
+    playStopRef.current.style.paddingTop = "6px";
+    props.onChangeProgram();
+  });
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.size("%", 50).color("#fff", "#555").row("center", "center").font(1.2).margin(10, "b")
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.margin(20, "l").padding(5).border("#FFF", 1)
+  }, _CPUClass__WEBPACK_IMPORTED_MODULE_3__.programs[props.computer.programIndex][0]), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.exp().shrink().row("center", "center")
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    ref: playStopRef,
+    onClick: onPlayPauseStep
+  }, "\u25B6"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    onClick: onPlayPauseStep,
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.margin(10, "l").margin(20, "r")
+  }, "Step"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.background("#").border("#FFF", 1).row().padding(5)
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.margin(10, "r")
+  }, "Simulation Frequency:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("input", {
+    value: frequency,
+    onChange: updateFrequency,
+    style: {
+      textAlign: "right",
+      ..._logic_style__WEBPACK_IMPORTED_MODULE_4__.css.sizeX(40).floatRight().color("#000", "#eee").noOutline().border("none", 0).border("#000", 1, "b")
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.margin(10, "l")
+  }, "Hz"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    onClick: props.onChangeGraph
+  }, "Change Diagram"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    onClick: onChangeProgram,
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.margin(20, "lr")
+  }, "Change Program"));
+}
+
+function Screen() {
+  const [hideGraph, setHideGraph] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [computer, setComputer] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(() => new Computer(0));
+  const changeProgram = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(e => {
+    setComputer(new Computer((computer.programIndex + 1) % _CPUClass__WEBPACK_IMPORTED_MODULE_3__.programs.length));
+  });
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "exp",
+    style: { ..._logic_style__WEBPACK_IMPORTED_MODULE_4__.css.padding(10).background("#111").column()
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Header, {
+    onChangeGraph: () => setHideGraph(!hideGraph),
+    onChangeProgram: changeProgram,
+    computer: computer
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: _logic_style__WEBPACK_IMPORTED_MODULE_4__.css.exp().shrink()
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_BitMapGraph__WEBPACK_IMPORTED_MODULE_2__.BitMapSlideGraph, {
+    hide: hideGraph,
+    header: netsToWatch,
+    data: computer.wireData
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_BitMapGraph__WEBPACK_IMPORTED_MODULE_2__.BitMapGraph, {
+    header: netsToWatch,
+    data: computer.processor.comps[4].memory
+  })));
+}
+
+(0,react_dom__WEBPACK_IMPORTED_MODULE_1__.render)( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Screen, null), document.getElementById("root"));
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=index.94e9990c0123fb2b8e34.74c8bd5607f863f49cf0.1b70b5490529f34a09817e37fd5cc74a.js.map
+//# sourceMappingURL=index.5b20009ae8f2e67a9b36.4df7865d8e31e57d0368.0a36fe0f1953f8dc16aaab3ad7d24111.js.map
