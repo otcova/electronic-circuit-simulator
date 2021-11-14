@@ -1,0 +1,177 @@
+
+inputPtr = 34
+snakeStartPtrPtr = 205
+snakeEndPtr = 200
+
+fn loop() {
+	drawPoint(M[snakeEndPtr], 0)
+	moveSnake()
+	drawPoint(M[snakeStartPtr], 1)
+}
+
+inline fn moveSnake() {
+	pastPos = M[snakeStartPtr]
+	if (++snakeStartPtr > 256) snakeStartPtr = 200
+	if (++snakeEndPtr > 256) snakeEndPtr = 200
+	M[snakeStartPtr] = pastPos + M[inputPtr]
+}
+
+fn drawPoint(pos, col) {
+	x, y = location(pos)
+	
+	mask = shiftRight(y)
+	line = M[x] | mask
+	
+	if (!col) line = M[x] & ~mask
+	else if (M[x] & mask) death()
+	
+	M[x] = line
+}
+
+
+fn death() {
+	death()
+}
+
+inline fn location(pos) {
+	x = (pos & 0b11111000) >> 3
+	y = pos & 0b111
+	return [x, y]
+}
+
+inline fn shiftRight(i) {
+	n = 1
+	while(i-- != 0) n += n
+	return n
+}
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+	
+inputPtr = 34
+	:inputPtr
+	0
+snakeStartPtr = 205
+	:snakeStartPtr
+	205
+snakeEndPtr = 200
+	:snakeEndPtr
+	200
+	
+fn loop() {
+		:loop
+	drawPoint(M[snakeEndPtr], 0)
+		r0 = :snakeEndPtr
+		r1 = 0
+		r2 = :ret1
+		jmp :drawPoint
+		:ret1
+		
+	pastPos = M[snakeStartPtr]
+		r0 = :snakeStartPtr
+		r3 = M[r0]
+		r3 = M[r0]
+	if (++snakeEndPtr > 256) snakeEndPtr = 200
+		r1 = :snakeEndPtr
+		r2 = M[r1]
+		r2 = r2 + 1
+		jc :sei
+		jmp :sen
+		:sei
+		r2 = 200
+		:sen
+		M[r1] = r2
+	if (++snakeStartPtr > 256) snakeStartPtr = 200
+		r1 = M[r0]
+		r1 = r1 + 1
+		jc :ssi
+		jmp :ssn
+		:ssi
+		r1 = 200
+		:ssn
+		M[r0] = r1
+	M[snakeStartPtr] = pastPos + M[inputPtr]
+		r2 = :inputPtr
+		r2 = M[r2]
+		r3 = r3 + r2
+		M[r1] = r3
+		
+	drawPoint(M[snakeStartPtr], 1)
+		r1 = 1
+		r2 = :ret2
+		jmp :drawPoint
+		:ret2
+	loop()
+		jmp :loop
+}
+
+fn drawPoint(posPtr, col, returnTo) {
+		:drawPoint
+	returnTo
+		r3 = 255
+		M[r3] = r2
+	pos = M[posPtr]
+		r0 = M[r0]
+	x = (pos & 0b11111000) >> 3
+		r3 = 0b11111000
+		r2 = r0
+		r2 = r2 & r3
+		r2 = r2 >> 1
+		r2 = r2 >> 1
+		r2 = r2 >> 1
+	y = pos & 0b111
+		r3 = 0b111
+		r0 = r0 & r3
+	mask = 1
+		r3 = 1
+	while(y-- != 0) mask += mask
+		r0 = r0
+		:while
+		jz :while exit
+		r3 = r3 + r3
+		r0 = r0 - 1
+		jmp :while
+		:while exit	
+	
+	line = M[x] | mask
+		r0 = M[r2]
+		r0 = r0 | r3
+		
+	if (!col) line = M[x] & ~mask
+		r1 = r1
+		jz :clear
+		jmp :skip clear
+		:clear
+		r3 = ~r3
+		r0 = r0 & r3
+		jmp :continue clear if
+		:skip clear
+		
+	else if (M[x] & mask) death()
+		r1 = M[r2]
+		r1 = r1 & r3
+		jz :continue clear if
+		jmp :death
+		:continue clear if
+	
+	M[x] = line
+		M[r2] = r0
+		
+	return
+		r3 = 255
+		r0 = M[r3]
+		jmp r0 (r1)
+}
+
+fn death() {
+		:death
+	death()
+		jmp :death
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+

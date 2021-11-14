@@ -1,3 +1,71 @@
+import { compile } from "./compiler"
+
+export const programs = [
+	["Fibonacci", compile([
+		"r0 = 0",
+		"r1 = 1",
+		"r3 = 16",
+
+		":loop",
+		"r3 = r3 + 1",
+		"M[r3] = r0",
+		"r2 = r1",
+		"r1 = r1 + r0",
+		"r0 = r2",
+
+		"jmp :loop",
+	])],
+	["Snake Game", compile([
+		"0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "255",
+		":inputPtr", "0",
+
+		":loop",
+
+		"r0 = :snakeEndPtr", "r1 = 0", "r2 = :ret1", "jmp :drawPoint", ":ret1",
+
+		"r0 = :snakeStartPtr", "r3 = M[r0]", "r3 = M[r3]",
+		"r1 = :snakeEndPtr", "r2 = M[r1]", "r2 = r2 + 1", "jc :sei", "jmp :sen", ":sei", "r2 = 190", ":sen", "M[r1] = r2",
+		"r1 = M[r0]", "r1 = r1 + 1", "jc :ssi", "jmp :ssn", ":ssi", "r1 = 190", ":ssn", "M[r0] = r1",
+		"r2 = :inputPtr", "r2 = M[r2]", "r3 = r3 + r2", "M[r1] = r3",
+
+		"r0 = :snakeStartPtr", "r1 = 1", "r2 = :loop", "jmp :drawPoint",
+		"jmp :loop",
+
+
+		":drawPoint",
+		"r3 = :returnPtr", "M[r3] = r2",
+
+		"r0 = M[r0]", "r0 = M[r0]",
+		"r3 = 0b11111000", "r2 = r0", "r2 = r2 & r3", "r2 = r2 >> 1", "r2 = r2 >> 1", "r2 = r2 >> 1",
+		"r3 = 0b111", "r0 = r0 & r3",
+
+		"r3 = 1",
+		"r0 = r0", ":while", "jz :while exit", "r3 = r3 + r3", "r0 = r0 - 1", "jmp :while", ":while exit",
+		"r0 = M[r2]", "r0 = r0 | r3",
+		"r1 = r1", "jz :clear", "jmp :skip clear", ":clear", "r3 = ~r3", "r0 = r0 & r3", "jmp :continue clear if", ":skip clear",
+		"r1 = M[r2]", "r1 = r1 & r3", "jz :continue clear if", "jmp :death", ":continue clear if",
+
+		"M[r2] = r0",
+		"r3 = :returnPtr", "r0 = M[r3]", "jmp r0 (r1)",
+		"jmp :loop",
+
+		":death",
+		"jmp :death",
+
+		":returnPtr", "0",
+		":snakeStartPtr", "195",
+		":snakeEndPtr", "190",
+		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
+		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
+		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
+		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
+	])]
+]
+let activeProgramIndex = 0
+export function setActiveProgramIndex(index) {
+	activeProgramIndex = index
+}
+
 class CompI {
 	constructor(board) {
 		this.board = board
@@ -26,7 +94,7 @@ class CompRc {
 			if (this.board.get("setup")) this.latch = this.rc
 			this.board.set("busB", this.latch)
 		}
-		
+
 		this.board.set("rc", this.rc)
 	}
 }
@@ -55,7 +123,7 @@ class CompR {
 			if (this.board.get("setup")) this.rb = this.r[b]
 			this.board.set("busB", this.rb)
 		}
-		
+
 		this.board.set("r0", this.r[0])
 		this.board.set("r1", this.r[1])
 		this.board.set("r2", this.r[2])
@@ -66,28 +134,30 @@ class CompR {
 class CompALU {
 	constructor(board) {
 		this.board = board
-		this.flags = new Map([["zero",  0],["carry",0],["negative",0]])
+		this.flags = new Map([["zero", 0], ["carry", 0], ["negative", 0]])
 	}
 	step() {
-		const a = this.board.get("busA")
 		const b = this.board.get("busB")
-		
-		const opCode = (this.board.get("I") & 0b1110000) >> 4
-		let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode]
-		let result = 0
-		
-		if (opName == "rb") result = b
-		if (opName == "&") result = a & b
-		if (opName == "|") result = a | b
-		if (opName == "+") result = a + b
-		if (opName == "~") result = ~b
-		if (opName == ">>1") result = b >> 1
-		if (opName == "+1") result = b + 1
-		if (opName == "-1") result = b - 1
-		
-		result = this.#setFlagsAndCut(result)
-		
-		if (this.board.get("alu-read")) this.board.set("busD", result)
+		if (this.board.get("alu-read")) {
+			const a = this.board.get("busA")
+
+			const opCode = (this.board.get("I") & 0b1110000) >> 4
+			let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode]
+			let result = 0
+
+			if (opName == "rb") result = b
+			if (opName == "&") result = a & b
+			if (opName == "|") result = a | b
+			if (opName == "+") result = a + b
+			if (opName == "~") result = ~b
+			if (opName == ">>1") result = b >> 1
+			if (opName == "+1") result = b + 1
+			if (opName == "-1") result = b - 1
+
+			result = this.#setFlagsAndCut(result)
+
+			this.board.set("busD", result)
+		}
 		this.board.set("alu-incremented", b + 1)
 		this.board.write(this.flags)
 	}
@@ -99,45 +169,30 @@ class CompALU {
 	}
 }
 
+let memory = null
+document.onkeydown = e => {
+	if (memory) {
+		if (e.key.toLowerCase() == "a" || e.key == "ArrowLeft") memory[33] = 0b11111000
+		if (e.key.toLowerCase() == "d" || e.key == "ArrowRight") memory[33] = 0b00001000
+		if (e.key.toLowerCase() == "w" || e.key == "ArrowUp") memory[33] = 0b11111111
+		if (e.key.toLowerCase() == "s" || e.key == "ArrowDown") memory[33] = 0b00000001
+	}
+}
+
 class CompM {
 	constructor(board) {
 		this.board = board
 		this.memory = new Int16Array(256)
-		this.memory.set([
-			0b10100000, 3, // r0 = 3
-			0b10100001, 4, // r1 = 4
-			0b00110100,    // r0 = r0 + r1
-		])
-		this.memory.set([
-			0b10100000, 0, // r0 = 0
-			0b10100001, 1, // r1 = 1
-			// :loop
-			0b00000110,    // r2 = r1
-			0b00110001,    // r1 = r1 + r0
-			0b00001000,    // r0 = r2
-			
-			0b11000000, 4,    // goto loop
-		])
-		// this.memory.set([
-		// 	0b11000000, 110,    // goto loop
-		// ])
-		// r0 = 0
-		// r1 = 1
-		// 
-		// :loop
-		// 
-		// r2 = r1
-		// r1 = r1 + r0
-		// r0 = r2
-		// 
-		// goto loop
+		this.memory.set(programs[activeProgramIndex][1])
+		memory = this.memory
 	}
 	step() {
 		const address = this.board.get("busB")
 		if (this.board.get("M-read"))
 			this.board.set("busD", this.memory[address])
-		if (this.board.get("M-write") && this.board.get("write"))
-			this.board.set("busD", this.board.get("busA"))
+		if (this.board.get("M-write") && this.board.get("write")) {
+			this.memory[address] = this.board.get("busA")
+		}
 	}
 }
 
@@ -162,13 +217,13 @@ class CompMng {
 			else if (!(I & 0b01010000)) iName = "load"
 			else if (I & 0b11000000) {
 				iName = "branch"
-				const branchType = ["jmp","jz","jc","jn"][(I & 0b110000) >> 4]
+				const branchType = ["jmp", "jz", "jc", "jn"][(I & 0b110000) >> 4]
 				if (branchType == "jmp") branch = "true"
-				if (branchType == "jz") branch = this.board.get("zero")? "true" : "false"
-				if (branchType == "jc") branch = this.board.get("carry")? "true" : "false"
-				if (branchType == "jn") branch = this.board.get("negative")? "true" : "false"
+				if (branchType == "jz") branch = this.board.get("zero") ? "true" : "false"
+				if (branchType == "jc") branch = this.board.get("carry") ? "true" : "false"
+				if (branchType == "jn") branch = this.board.get("negative") ? "true" : "false"
 			}
-			
+
 			this.microInst.set("I-write", !this.board.get("stage")) //Indirect
 			this.microInst.set("rc-inc", ["loadI", "load"].includes(iName) || branch == "false")
 			this.microInst.set("rc-write", branch == "true")
@@ -193,7 +248,7 @@ class CompCounter {
 		if (this.board.down("clk")) ++this.counter
 		this.board.set("setup", this.board.get("clk") && !(this.counter & 1))
 		this.board.set("write", this.board.get("clk") && (this.counter & 1))
-		this.board.set("stage", (this.counter & 2)>>1)
+		this.board.set("stage", (this.counter & 2) >> 1)
 	}
 }
 

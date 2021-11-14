@@ -3,6 +3,7 @@
 	min-width: 0px;
 	min-height: 0px;
 	overflow: hidden;
+	flex-shrink: 0;
 }
 
 html, body, #root {
@@ -14,6 +15,20 @@ html, body, #root {
 	user-select: none;
 	color: #111;
 	font-size: 14px;	
+}
+
+button {
+	/* font-size: 1.2rem; */
+	white-space: nowrap;
+	padding: 6px;
+	cursor: pointer;
+	color: #000;
+	background-color: #eee;
+	outline: none;
+	border: 1px solid #eee;
+}
+button:hover {
+	border: 1px solid #000;
 }
 
 .nowrap {
