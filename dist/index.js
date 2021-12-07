@@ -31954,7 +31954,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "RC", "R0", "R1", "R2", "R3"];
+const netsToWatch = ["CLK", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "BusA", "BusB", "BusD", "", "I", "RC", "R0", "R1", "R2", "R3"];
 
 class Computer {
   constructor(programIndex) {
@@ -32089,4 +32089,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.8211c7de622a124e47fd.10f161f158533c2c29f5.6507f5335df11682af6d995e896bc6fc.js.map
+//# sourceMappingURL=index.b0cb5d44f414e86382a8.66f44b982b25120f67f6.c8956eb8b523c0d7c4d09c6d392c0a6f.js.map
