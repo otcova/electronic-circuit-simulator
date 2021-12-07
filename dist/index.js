@@ -228,7 +228,7 @@ function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollect
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
 
-const programs = [["Fibonacci", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["r0 = 0", "r1 = 1", "r3 = 16", ":loop", "r3 = r3 + 1", "M[r3] = r0", "r2 = r1", "r1 = r1 + r0", "r0 = r2", "jmp :loop"])], ["Snake Game", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "255", ":inputPtr", "0", ":loop", "r0 = :snakeEndPtr", "r1 = 0", "r2 = :ret1", "jmp :drawPoint", ":ret1", "r0 = :snakeStartPtr", "r3 = M[r0]", "r3 = M[r3]", "r1 = :snakeEndPtr", "r2 = M[r1]", "r2 = r2 + 1", "jc :sei", "jmp :sen", ":sei", "r2 = 190", ":sen", "M[r1] = r2", "r1 = M[r0]", "r1 = r1 + 1", "jc :ssi", "jmp :ssn", ":ssi", "r1 = 190", ":ssn", "M[r0] = r1", "r2 = :inputPtr", "r2 = M[r2]", "r3 = r3 + r2", "M[r1] = r3", "r0 = :snakeStartPtr", "r1 = 1", "r2 = :loop", "jmp :drawPoint", "jmp :loop", ":drawPoint", "r3 = :returnPtr", "M[r3] = r2", "r0 = M[r0]", "r0 = M[r0]", "r3 = 0b11111000", "r2 = r0", "r2 = r2 & r3", "r2 = r2 >> 1", "r2 = r2 >> 1", "r2 = r2 >> 1", "r3 = 0b111", "r0 = r0 & r3", "r3 = 1", "r0 = r0", ":while", "jz :while exit", "r3 = r3 + r3", "r0 = r0 - 1", "jmp :while", ":while exit", "r0 = M[r2]", "r0 = r0 | r3", "r1 = r1", "jz :clear", "jmp :skip clear", ":clear", "r3 = ~r3", "r0 = r0 & r3", "jmp :continue clear if", ":skip clear", "r1 = M[r2]", "r1 = r1 & r3", "jz :continue clear if", "jmp :death", ":continue clear if", "M[r2] = r0", "r3 = :returnPtr", "r0 = M[r3]", "jmp r0 (r1)", "jmp :loop", ":death", "jmp :death", ":returnPtr", "0", ":snakeStartPtr", "195", ":snakeEndPtr", "190", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19"])]];
+const programs = [["Fibonacci", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["r0 = 0", "r1 = 1", "r3 = 16", ":loop", "r3 = r3 + 1", "M[r3] = r0", "r2 = r1", "r1 = r1 + r0", "r0 = r2", "jmp :loop"])], ["Snake Game", (0,_compiler__WEBPACK_IMPORTED_MODULE_0__.compile)(["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "255", ":inputPtr", "0", ":loop", "r0 = :snakeEndPtr", "r1 = 0", "r2 = :ret1", "jmp :drawPoint", ":ret1", "r0 = :snakeStartPtr", "r3 = M[r0]", "r3 = M[r3]", "r1 = :snakeEndPtr", "r2 = M[r1]", "r2 = r2 + 1", "jc :sei", "jmp :sen", ":sei", "r2 = 190", ":sen", "M[r1] = r2", "r1 = M[r0]", "r1 = r1 + 1", "jc :ssi", "jmp :ssn", ":ssi", "r1 = 190", ":ssn", "M[r0] = r1", "r2 = :inputPtr", "r2 = M[r2]", "r3 = r3 + r2", "M[r1] = r3", "r0 = :snakeStartPtr", "r1 = 1", "r2 = :loop", "jmp :drawPoint", "jmp :loop", ":drawPoint", "r3 = :returnPtr", "M[r3] = r2", "r0 = M[r0]", "r0 = M[r0]", "r3 = 0b11111000", "r2 = r0", "r2 = r2 & r3", "r2 = r2 >> 1", "r2 = r2 >> 1", "r2 = r2 >> 1", "r3 = 0b111", "r0 = r0 & r3", "r3 = 1", "r0 = r0", ":while", "jz :while exit", "r3 = r3 + r3", "r0 = r0 - 1", "jmp :while", ":while exit", "r0 = M[r2]", "r0 = r0 | r3", "r1 = r1", "jz :clear", "jmp :skip clear", ":clear", "r3 = ~r3", "r0 = r0 & r3", "jmp :continue clear if", ":skip clear", "r1 = M[r2]", "r1 = r1 & r3", "jz :continue clear if", "jmp :death", ":continue clear if", "M[r2] = r0", "r3 = :returnPtr", "r0 = M[r3]", "jmp r0 (r1)", "jmp :loop", ":death", "jmp :death", ":returnPtr", "0", ":snakeStartPtr", "220", ":snakeEndPtr", "190", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19"])]];
 let activeProgramIndex = 0;
 function setActiveProgramIndex(index) {
   activeProgramIndex = index;
@@ -241,7 +241,7 @@ class CompI {
   }
 
   step() {
-    if (this.board.get("I-write") && this.board.get("write")) this.I = this.board.get("busD");
+    if (this.board.get("ri-write") && this.board.get("write")) this.I = this.board.get("busD");
     this.board.set("I", this.I);
   }
 
@@ -397,7 +397,7 @@ class CompMng {
         if (branchType == "jc") branch = this.board.get("carry") ? "true" : "false";
         if (branchType == "jn") branch = this.board.get("negative") ? "true" : "false";
       }
-      this.microInst.set("I-write", !this.board.get("stage")); //Indirect
+      this.microInst.set("ri-write", !this.board.get("stage")); //Indirect
 
       this.microInst.set("rc-inc", ["loadI", "load"].includes(iName) || branch == "false");
       this.microInst.set("rc-write", branch == "true");
@@ -2135,7 +2135,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
   \***************************************/
 /***/ ((module) => {
 
-module.exports = "#version 300 es\r\n\r\nprecision mediump float;\r\n\r\nuniform vec4 u_color;\r\nout vec4 fragColor;\r\n\r\nvoid main() {\r\n\tfragColor = u_color;\r\n}";
+module.exports = "#version 300 es\n\nprecision mediump float;\n\nuniform vec4 u_color;\nout vec4 fragColor;\n\nvoid main() {\n\tfragColor = u_color;\n}";
 
 /***/ }),
 
@@ -2145,7 +2145,7 @@ module.exports = "#version 300 es\r\n\r\nprecision mediump float;\r\n\r\nuniform
   \*************************************/
 /***/ ((module) => {
 
-module.exports = "#version 300 es\r\n\r\nin vec2 a_position;\r\n\r\nuniform vec2 u_resolution;\r\n\r\nvoid main() {\r\n\tvec2 clipSpace = 2. * a_position / u_resolution - 1.;\r\n\r\n\tgl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\r\n\tgl_PointSize = 4.0;\r\n}";
+module.exports = "#version 300 es\n\nin vec2 a_position;\n\nuniform vec2 u_resolution;\n\nvoid main() {\n\tvec2 clipSpace = 2. * a_position / u_resolution - 1.;\n\n\tgl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\n\tgl_PointSize = 4.0;\n}";
 
 /***/ }),
 
@@ -31954,7 +31954,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "I-write", "rc-inc", "rc-write", "rc-read", "ra-write", "ra-read", "rb-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "rc", "r0", "r1", "r2", "r3"];
+const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "RC", "R0", "R1", "R2", "R3"];
 
 class Computer {
   constructor(programIndex) {
@@ -32089,4 +32089,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.2f31bbed923835ea9cf7.76f3e3025dd0be443b55.2844a9beb2400332f949bdf79b2b2e8c.js.map
+//# sourceMappingURL=index.8211c7de622a124e47fd.10f161f158533c2c29f5.6507f5335df11682af6d995e896bc6fc.js.map

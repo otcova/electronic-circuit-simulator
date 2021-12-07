@@ -4,7 +4,7 @@ import { BitMapGraph, BitMapSlideGraph } from "./BitMapGraph"
 import { Processor, programs, setActiveProgramIndex } from "./CPUClass";
 import { css } from "./logic/style";
 
-const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "I-write", "rc-inc", "rc-write", "rc-read", "ra-write", "ra-read", "rb-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "rc", "r0", "r1", "r2", "r3"]
+const netsToWatch = ["CLK", "Write", "Setup", "Stage", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "zero", "carry", "negative", "", "BusA", "BusB", "BusD", "", "I", "RC", "R0", "R1", "R2", "R3"]
 
 class Computer {
 	constructor(programIndex) {

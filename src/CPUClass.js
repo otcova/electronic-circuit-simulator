@@ -53,7 +53,7 @@ export const programs = [
 		"jmp :death",
 
 		":returnPtr", "0",
-		":snakeStartPtr", "195",
+		":snakeStartPtr", "220",
 		":snakeEndPtr", "190",
 		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
 		"19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19",
@@ -72,7 +72,7 @@ class CompI {
 		this.I = 0
 	}
 	step() {
-		if (this.board.get("I-write") && this.board.get("write"))
+		if (this.board.get("ri-write") && this.board.get("write"))
 			this.I = this.board.get("busD")
 		this.board.set("I", this.I)
 	}
@@ -224,7 +224,7 @@ class CompMng {
 				if (branchType == "jn") branch = this.board.get("negative") ? "true" : "false"
 			}
 
-			this.microInst.set("I-write", !this.board.get("stage")) //Indirect
+			this.microInst.set("ri-write", !this.board.get("stage")) //Indirect
 			this.microInst.set("rc-inc", ["loadI", "load"].includes(iName) || branch == "false")
 			this.microInst.set("rc-write", branch == "true")
 			this.microInst.set("rc-read", ["loadI", "load", "branch"].includes(iName))
