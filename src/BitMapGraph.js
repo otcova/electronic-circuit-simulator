@@ -156,8 +156,9 @@ export function BitMapGraph(props) {
 
 		for (let x = 0; x < data.length; ++x) {
 			for (let y = 0; y < data[0].length; ++y) {
+				const hLine = Math.trunc(y / 8)*5;
 				const bit = (props.data[Math.floor(y/8)*data.length + x] & (1 << (y % 8)))? 1 : 0
-				points[bit].quad(vec2.add([x * scale, y * scale], offset), vec2.add([(x + 1) * scale - spacing, (y + 1) * scale - spacing], offset))
+				points[bit].quad(vec2.add([x * scale, y * scale + hLine], offset), vec2.add([(x + 1) * scale - spacing, (y + 1) * scale - spacing + hLine], offset))
 			}
 		}
 	})
