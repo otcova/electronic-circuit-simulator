@@ -31963,7 +31963,7 @@ class Computer {
     this.processor = new _CPUClass__WEBPACK_IMPORTED_MODULE_3__.Processor();
     this.programIndex = programIndex;
     this.interval = 0;
-    this.frequency = 60;
+    this.frequency = 100;
     this.wireData = [];
   }
 
@@ -32090,4 +32090,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.3daff62594073c17b74c.88e4dfdd139bba0eacd9.cd190793a170cff11b42638c335b0fcf.js.map
+//# sourceMappingURL=index.b9a3991607b9c11cb1b4.0424609a9d85d2c5c8cc.69622d5ce65470ab621e2bb175b9a780.js.map

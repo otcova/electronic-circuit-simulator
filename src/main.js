@@ -12,7 +12,7 @@ class Computer {
 		this.processor = new Processor()
 		this.programIndex = programIndex
 		this.interval = 0
-		this.frequency = 60
+		this.frequency = 100
 		this.wireData = []
 	}
 	step() {
