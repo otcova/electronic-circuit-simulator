@@ -74,7 +74,7 @@ class CompI {
 	step() {
 		if (this.board.get("ri-write") && this.board.get("write"))
 			this.I = this.board.get("busD")
-		this.board.set("I", this.I)
+		this.board.set("RI", this.I)
 	}
 }
 
@@ -107,8 +107,8 @@ class CompR {
 		this.rb = 0
 	}
 	step() {
-		const a = this.board.get("I") & 0b11
-		const b = (this.board.get("I") & 0b1100) >> 2
+		const a = this.board.get("RI") & 0b11
+		const b = (this.board.get("RI") & 0b1100) >> 2
 
 		if (this.board.get("ra-write") && this.board.get("write"))
 			this.r[a] = this.board.get("busD")
@@ -141,7 +141,7 @@ class CompALU {
 		if (this.board.get("alu-read")) {
 			const a = this.board.get("busA")
 
-			const opCode = (this.board.get("I") & 0b1110000) >> 4
+			const opCode = (this.board.get("RI") & 0b1110000) >> 4
 			let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode]
 			let result = 0
 
@@ -205,7 +205,7 @@ class CompMng {
 		if (this.board.get("setup")) {
 			let I = -1
 			if (this.board.get("stage"))
-				I = this.board.get("I")
+				I = this.board.get("RI")
 
 			let iName = "undefined"
 			let branch = "no"

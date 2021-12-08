@@ -243,7 +243,7 @@ class CompI {
 
   step() {
     if (this.board.get("ri-write") && this.board.get("write")) this.I = this.board.get("busD");
-    this.board.set("I", this.I);
+    this.board.set("RI", this.I);
   }
 
 }
@@ -281,8 +281,8 @@ class CompR {
   }
 
   step() {
-    const a = this.board.get("I") & 0b11;
-    const b = (this.board.get("I") & 0b1100) >> 2;
+    const a = this.board.get("RI") & 0b11;
+    const b = (this.board.get("RI") & 0b1100) >> 2;
     if (this.board.get("ra-write") && this.board.get("write")) this.r[a] = this.board.get("busD");
 
     if (this.board.get("ra-read")) {
@@ -320,7 +320,7 @@ class CompALU {
 
     if (this.board.get("alu-read")) {
       const a = this.board.get("busA");
-      const opCode = (this.board.get("I") & 0b1110000) >> 4;
+      const opCode = (this.board.get("RI") & 0b1110000) >> 4;
       let opName = ["rb", "&", "|", "+", "~", ">>1", "+1", "-1"][opCode];
       let result = 0;
       if (opName == "rb") result = b;
@@ -387,7 +387,7 @@ class CompMng {
   step() {
     if (this.board.get("setup")) {
       let I = -1;
-      if (this.board.get("stage")) I = this.board.get("I");
+      if (this.board.get("stage")) I = this.board.get("RI");
       let iName = "undefined";
       let branch = "no";
       if (I == -1) iName = "loadI";else if (!(I & 0b10000000)) iName = "alu";else if (!(I & 0b01110000)) iName = "read";else if (!(I & 0b01100000)) iName = "write";else if (!(I & 0b01010000)) iName = "load";else if (!(I & 0b01010000)) iName = "load";else if (I & 0b11000000) {
@@ -31955,7 +31955,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const netsToWatch = ["CLK", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "BusA", "BusB", "BusD", "", "I", "RC", "R0", "R1", "R2", "R3"];
+const netsToWatch = ["CLK", "", "RI-write", "RC-inc", "RC-write", "RC-read", "RA-write", "RA-read", "RB-read", "ALU-read", "M-write", "M-read", "", "BusA", "BusB", "BusD", "", "RI", "RC", "R0", "R1", "R2", "R3"];
 
 class Computer {
   constructor(programIndex) {
@@ -32090,4 +32090,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.b9a3991607b9c11cb1b4.0424609a9d85d2c5c8cc.69622d5ce65470ab621e2bb175b9a780.js.map
+//# sourceMappingURL=index.d0373a90b995acdeb62f.83eff4e9ee11a89a8d44.058e16c8df18c1b46a9982358a09ee9d.js.map
