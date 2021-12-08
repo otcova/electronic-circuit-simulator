@@ -193,8 +193,9 @@ function BitMapGraph(props) {
 
     for (let x = 0; x < data.length; ++x) {
       for (let y = 0; y < data[0].length; ++y) {
+        const hLine = Math.trunc(y / 8) * 5;
         const bit = props.data[Math.floor(y / 8) * data.length + x] & 1 << y % 8 ? 1 : 0;
-        points[bit].quad(_logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([x * scale, y * scale], offset), _logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([(x + 1) * scale - spacing, (y + 1) * scale - spacing], offset));
+        points[bit].quad(_logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([x * scale, y * scale + hLine], offset), _logic_vec__WEBPACK_IMPORTED_MODULE_5__.vec2.add([(x + 1) * scale - spacing, (y + 1) * scale - spacing + hLine], offset));
       }
     }
   });
@@ -32089,4 +32090,4 @@ function Screen() {
 
 /******/ })()
 ;
-//# sourceMappingURL=index.b0cb5d44f414e86382a8.66f44b982b25120f67f6.c8956eb8b523c0d7c4d09c6d392c0a6f.js.map
+//# sourceMappingURL=index.3daff62594073c17b74c.88e4dfdd139bba0eacd9.cd190793a170cff11b42638c335b0fcf.js.map
